@@ -112,6 +112,16 @@ window.navigateView = function(viewName, params = null) {
     history.pushState(null, '', '#superadmin');
   }
 };
+window._realNavigateView = window.navigateView;
+
+// Drain any early queued navigation requests
+if (Array.isArray(window._navQueue) && window._navQueue.length > 0) {
+  const queued = window._navQueue.pop();
+  window._navQueue = [];
+  if (queued && queued.viewName) {
+    window.navigateView(queued.viewName, queued.params);
+  }
+}
 
 export function handleHashRoute() {
   const pathname = window.location.pathname || '';
@@ -784,8 +794,8 @@ window.toggleMobileMenu = function(forceClose) {
   }
 };
 
-// Setup on DOM loaded
-document.addEventListener('DOMContentLoaded', () => {
+// Setup on DOM loaded or immediately if already ready
+function initApp() {
   // Setup light dismiss on all dialogs
   document.querySelectorAll('dialog').forEach(setupDialogLightDismiss);
 
@@ -879,5 +889,11 @@ document.addEventListener('DOMContentLoaded', () => {
       isScrolling = true;
     }
   }, { passive: true });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 

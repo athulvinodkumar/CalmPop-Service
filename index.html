@@ -124,6 +124,57 @@
       }
     };
   </script>
+
+  <!-- Early Bootstrap Navigation & Global Stubs (prevents Uncaught TypeError before main.js module evaluation) -->
+  <script>
+    window._navQueue = [];
+    window.navigateView = function(viewName, params = null) {
+      if (typeof window._realNavigateView === 'function') {
+        return window._realNavigateView(viewName, params);
+      }
+      if (viewName === 'login') {
+        window.location.hash = '#login';
+      } else if (viewName === 'employee') {
+        window.location.hash = params ? `#employee/${params}` : '#employee';
+      } else if (viewName === 'admin') {
+        window.location.hash = params ? `#admin?id=${params}` : '#admin';
+      } else if (viewName === 'superadmin') {
+        window.location.hash = '#superadmin';
+      } else if (viewName === 'checkout') {
+        window.location.hash = '#checkout';
+      } else if (viewName === 'landing' || viewName === 'home') {
+        window.location.hash = params ? `#${params}` : '#home';
+      }
+      window._navQueue.push({ viewName, params });
+    };
+
+    window.openModal = function(id) {
+      const el = document.getElementById(id);
+      if (el && typeof el.showModal === 'function') el.showModal();
+    };
+
+    window.closeModal = function(id) {
+      const el = document.getElementById(id);
+      if (el && typeof el.close === 'function') el.close();
+    };
+
+    window.toggleMobileMenu = function(forceClose) {
+      const menu = document.getElementById('mobile-nav-drawer');
+      const icon = document.getElementById('mobile-nav-icon');
+      if (!menu) return;
+      const shouldClose = forceClose !== undefined ? forceClose : !menu.classList.contains('hidden');
+      if (shouldClose) {
+        menu.classList.add('hidden');
+        if (icon) icon.textContent = 'menu';
+      } else {
+        menu.classList.remove('hidden');
+        if (icon) icon.textContent = 'close';
+      }
+    };
+  </script>
+
+  <!-- Core Application Logic (loaded with module defer semantics from head) -->
+  <script type="module" src="/src/main.js"></script>
 </head>
 
 <body class="bg-background font-body-md text-on-surface antialiased selection:bg-tertiary-fixed selection:text-on-tertiary-fixed relative">
@@ -1447,8 +1498,7 @@
     </div>
   </dialog>
 
-  <!-- Application Logic -->
-  <script type="module" src="./src/main.js"></script>
+  <!-- Application Logic is loaded in <head> -->
 
 </body>
 </html>
