@@ -21,7 +21,7 @@ export function renderMandalaBloom(sessionManager, options = {}) {
     <div id="mandala-bloom-root" class="relative w-full flex flex-col items-center justify-between min-h-[580px] p-2 sm:p-4 select-none">
       
       <!-- Top Creative Toolbar -->
-      <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-3 bg-surface-container-low/70 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-surface-container mb-3 text-xs">
+      <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-3 bg-surface-container-low/80 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-surface-container mb-3 text-xs shadow-xs">
         
         <!-- Left: Pastel Colors & Rainbow Shift Mode -->
         <div class="flex items-center gap-1.5 flex-wrap">
@@ -60,9 +60,9 @@ export function renderMandalaBloom(sessionManager, options = {}) {
               type="range" 
               id="mandala-brush-size" 
               min="2" 
-              max="20" 
+              max="24" 
               step="1" 
-              value="5" 
+              value="4" 
               class="w-16 accent-primary cursor-pointer"
               title="Adjust Brush Width"
             />
@@ -114,24 +114,20 @@ export function renderMandalaBloom(sessionManager, options = {}) {
 
       </div>
 
-      <!-- Main Circular Mandala Canvas Stage -->
-      <div class="relative w-full max-w-4xl flex-1 min-h-[480px] rounded-3xl p-3 sm:p-4 bg-gradient-to-b from-[#111827] via-[#0F172A] to-[#1E293B] shadow-2xl border border-slate-700/60 flex items-center justify-center overflow-hidden">
+      <!-- Main Mandala Drawing Stage -->
+      <div id="mandala-stage-container" class="relative w-full max-w-4xl flex-1 min-h-[480px] rounded-3xl p-3 sm:p-4 bg-gradient-to-b from-[#0B1120] via-[#0F172A] to-[#1E293B] shadow-2xl border border-slate-700/60 flex items-center justify-center overflow-hidden">
         
-        <!-- Subtle Ambient Sacred Geometry Ring Background -->
-        <div class="absolute w-[440px] h-[440px] rounded-full border border-cyan-500/10 pointer-events-none animate-spin" style="animation-duration: 180s;"></div>
-        <div class="absolute w-[320px] h-[320px] rounded-full border border-lime-400/10 pointer-events-none animate-spin" style="animation-duration: 120s; animation-direction: reverse;"></div>
-
         <!-- Interactive 8-Fold Mandala Drawing Canvas -->
         <canvas 
           id="mandala-bloom-canvas" 
-          class="relative z-10 block rounded-full shadow-2xl cursor-crosshair touch-none bg-[#090D16]"
+          class="relative z-10 block rounded-full shadow-2xl cursor-crosshair touch-none bg-[#070A12] border border-cyan-500/20"
           style="touch-action: none;"
         ></canvas>
 
         <!-- Tap Guidance Hint -->
-        <div id="mandala-hint" class="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none bg-black/50 backdrop-blur-md text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg transition-opacity duration-700 flex items-center gap-2 border border-white/20 z-20">
+        <div id="mandala-hint" class="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none bg-black/60 backdrop-blur-md text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg transition-opacity duration-700 flex items-center gap-2 border border-white/20 z-20">
           <span class="material-symbols-outlined text-[16px] text-cyan-400 animate-pulse">auto_fix_high</span>
-          <span>Draw with mouse or touch — 8-fold kaleidoscopic petals mirror automatically</span>
+          <span>Click or drag anywhere from center to edge — 8-fold radial petals bloom automatically</span>
         </div>
 
       </div>
@@ -161,12 +157,12 @@ export class MandalaBloomController {
     this.isShiftingColor = true;
     this.colorHue = 190; // Start at calm cyan
     this.currentColor = '#38BDF8';
-    this.brushSize = 5;
+    this.brushSize = 4;
 
-    // Undo / Redo history stack
+    // Undo / Redo history stack (stored as offscreen canvas snapshots)
     this.undoStack = [];
     this.redoStack = [];
-    this.maxHistory = 15;
+    this.maxHistory = 20;
 
     // Audio frequency mapping throttle
     this.lastAudioTime = 0;
@@ -183,7 +179,8 @@ export class MandalaBloomController {
 
     this.ctx = this.canvas.getContext('2d');
     this.setupCanvasSize();
-    this.saveState(); // Initial blank canvas state
+    this.drawBackgroundGuides();
+    this.saveState(); // Initial blank state with guides
 
     this.canvas.addEventListener('pointerdown', this.handlePointerDown);
     window.addEventListener('pointermove', this.handlePointerMove);
@@ -196,32 +193,77 @@ export class MandalaBloomController {
 
   setupCanvasSize() {
     if (!this.canvas) return;
-    const parent = this.canvas.parentElement;
+    const parent = document.getElementById('mandala-stage-container') || this.canvas.parentElement;
     const rect = parent.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.max(window.devicePixelRatio || 1, 2); // Ensure crystal-clear high-DPI rendering
     
-    // Circular diameter fitting within container
-    const size = Math.min(rect.width - 24, rect.height - 24, 460);
-    this.canvas.width = size * dpr;
-    this.canvas.height = size * dpr;
+    // Size canvas to fill the available stage nicely up to 640px
+    const availableWidth = rect.width > 0 ? rect.width - 24 : 520;
+    const availableHeight = rect.height > 0 ? rect.height - 24 : 520;
+    const size = Math.min(availableWidth, availableHeight, 640);
+
+    this.dpr = dpr;
+    this.canvas.width = Math.round(size * dpr);
+    this.canvas.height = Math.round(size * dpr);
     this.canvas.style.width = `${size}px`;
     this.canvas.style.height = `${size}px`;
 
-    this.ctx.scale(dpr, dpr);
     this.size = size;
     this.centerX = size / 2;
     this.centerY = size / 2;
   }
 
+  drawBackgroundGuides() {
+    // Subtle background concentric guidelines for visual harmony and precision
+    const ctx = this.ctx;
+    const dpr = this.dpr || 1;
+    const cx = this.centerX * dpr;
+    const cy = this.centerY * dpr;
+    const maxR = (this.size / 2) * dpr;
+
+    ctx.save();
+    ctx.fillStyle = '#070A12';
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Concentric guide rings
+    ctx.lineWidth = 1 * dpr;
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)'; // faint cyan ring
+    const ringFractions = [0.25, 0.5, 0.75, 0.95];
+    for (const frac of ringFractions) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, maxR * frac, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Radial axis guide rays (8 axes)
+    ctx.strokeStyle = 'rgba(201, 242, 70, 0.05)'; // faint lime axis
+    for (let i = 0; i < 8; i++) {
+      const angle = (i * Math.PI) / 4;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(angle) * maxR, cy + Math.sin(angle) * maxR);
+      ctx.stroke();
+    }
+
+    // Gentle center point
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3 * dpr, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
   handleResize() {
-    // Preserve artwork across window resize
+    if (!this.canvas) return;
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = this.canvas.width;
     tempCanvas.height = this.canvas.height;
-    tempCanvas.getContext('2d').drawImage(this.canvas, 0, 0);
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCtx.drawImage(this.canvas, 0, 0);
 
     this.setupCanvasSize();
-    this.ctx.drawImage(tempCanvas, 0, 0, this.size, this.size);
+    this.ctx.drawImage(tempCanvas, 0, 0, this.canvas.width, this.canvas.height);
   }
 
   attachUiListeners() {
@@ -250,7 +292,7 @@ export class MandalaBloomController {
     const sizeSlider = document.getElementById('mandala-brush-size');
     if (sizeSlider) {
       sizeSlider.addEventListener('input', (e) => {
-        this.brushSize = parseInt(e.target.value, 10) || 5;
+        this.brushSize = parseInt(e.target.value, 10) || 4;
       });
     }
 
@@ -265,7 +307,7 @@ export class MandalaBloomController {
     const clearBtn = document.getElementById('btn-mandala-clear');
     if (clearBtn) {
       clearBtn.addEventListener('click', () => {
-        this.ctx.clearRect(0, 0, this.size, this.size);
+        this.drawBackgroundGuides();
         this.saveState();
         this.sessionManager?.recordEvent('mandala_clear');
         audioSynth.playGentleTone(261, 0.6, 'sine', 0.04);
@@ -283,9 +325,15 @@ export class MandalaBloomController {
     if (this.undoStack.length >= this.maxHistory) {
       this.undoStack.shift();
     }
-    const snap = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    this.undoStack.push(snap);
-    this.redoStack = []; // Clear redo branch on new action
+    // Store snapshot in an offscreen canvas for resolution independence
+    const snapshotCanvas = document.createElement('canvas');
+    snapshotCanvas.width = this.canvas.width;
+    snapshotCanvas.height = this.canvas.height;
+    const snapCtx = snapshotCanvas.getContext('2d');
+    snapCtx.drawImage(this.canvas, 0, 0);
+
+    this.undoStack.push(snapshotCanvas);
+    this.redoStack = [];
   }
 
   undo() {
@@ -293,7 +341,8 @@ export class MandalaBloomController {
       const current = this.undoStack.pop();
       this.redoStack.push(current);
       const prev = this.undoStack[this.undoStack.length - 1];
-      this.ctx.putImageData(prev, 0, 0);
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.drawImage(prev, 0, 0);
       audioSynth.playGentleTone(349, 0.3, 'sine', 0.03);
     }
   }
@@ -302,25 +351,31 @@ export class MandalaBloomController {
     if (this.redoStack.length > 0) {
       const next = this.redoStack.pop();
       this.undoStack.push(next);
-      this.ctx.putImageData(next, 0, 0);
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.drawImage(next, 0, 0);
       audioSynth.playGentleTone(440, 0.3, 'sine', 0.03);
     }
   }
 
   getPointerPos(e) {
     const rect = this.canvas.getBoundingClientRect();
+    // Clamp to canvas boundaries
+    const rawX = e.clientX - rect.left;
+    const rawY = e.clientY - rect.top;
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: Math.max(0, Math.min(this.size, rawX)),
+      y: Math.max(0, Math.min(this.size, rawY))
     };
   }
 
   handlePointerDown(e) {
     this.hideHint();
     this.isDrawing = true;
-    this.lastPoint = this.getPointerPos(e);
-    this.drawStroke(this.lastPoint, this.lastPoint);
-    this.playRadialTone(this.lastPoint);
+    const pos = this.getPointerPos(e);
+    this.lastPoint = pos;
+    // Draw initial spot so taps and clicks register immediately anywhere
+    this.drawPoint(pos);
+    this.playRadialTone(pos);
   }
 
   handlePointerMove(e) {
@@ -328,7 +383,7 @@ export class MandalaBloomController {
     const current = this.getPointerPos(e);
 
     const dist = Math.hypot(current.x - this.lastPoint.x, current.y - this.lastPoint.y);
-    if (dist < 2) return;
+    if (dist < 1.5) return;
 
     this.drawStroke(this.lastPoint, current);
     this.playRadialTone(current);
@@ -356,32 +411,81 @@ export class MandalaBloomController {
     }
   }
 
+  drawPoint(p) {
+    // Single tap/point placement across all 8 radial symmetries
+    const ctx = this.ctx;
+    const dpr = this.dpr || 1;
+    const cx = this.centerX * dpr;
+    const cy = this.centerY * dpr;
+
+    if (this.isShiftingColor) {
+      this.colorHue = (this.colorHue + 1.2) % 360;
+      this.currentColor = `hsl(${this.colorHue}, 90%, 72%)`;
+    }
+
+    ctx.save();
+    ctx.fillStyle = this.currentColor;
+    ctx.shadowColor = this.currentColor;
+    ctx.shadowBlur = Math.min(10, this.brushSize * 1.5) * dpr;
+
+    const x = (p.x - this.centerX) * dpr;
+    const y = (p.y - this.centerY) * dpr;
+    const radius = (this.brushSize / 2) * dpr;
+
+    const segments = 8;
+    const angleStep = (Math.PI * 2) / segments;
+
+    for (let k = 0; k < segments; k++) {
+      const angle = k * angleStep;
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+
+      // Direct rotation
+      const rx = x * cos - y * sin;
+      const ry = x * sin + y * cos;
+      ctx.beginPath();
+      ctx.arc(cx + rx, cy + ry, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Reflected mirror
+      const mx = x * cos - (-y) * sin;
+      const my = x * sin + (-y) * cos;
+      ctx.beginPath();
+      ctx.arc(cx + mx, cy + my, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
   drawStroke(p0, p1) {
     const ctx = this.ctx;
-    const cx = this.centerX;
-    const cy = this.centerY;
+    const dpr = this.dpr || 1;
+    const cx = this.centerX * dpr;
+    const cy = this.centerY * dpr;
 
     // Shift color if in rainbow morphing mode
     if (this.isShiftingColor) {
-      this.colorHue = (this.colorHue + 1.2) % 360;
-      this.currentColor = `hsl(${this.colorHue}, 85%, 68%)`;
+      this.colorHue = (this.colorHue + 0.8) % 360;
+      this.currentColor = `hsl(${this.colorHue}, 90%, 72%)`;
     }
 
     ctx.save();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.lineWidth = this.brushSize;
+    ctx.lineWidth = this.brushSize * dpr;
     ctx.strokeStyle = this.currentColor;
+    // Crisp clarity: restrained shadow glow with sharp line stroke
     ctx.shadowColor = this.currentColor;
-    ctx.shadowBlur = 8; // Glowing neon petal effect
+    ctx.shadowBlur = Math.min(8, this.brushSize * 1.5) * dpr;
 
-    // Vectors relative to center
-    const x0 = p0.x - cx;
-    const y0 = p0.y - cy;
-    const x1 = p1.x - cx;
-    const y1 = p1.y - cy;
+    // Coordinate vectors relative to center, scaled to internal canvas resolution
+    const x0 = (p0.x - this.centerX) * dpr;
+    const y0 = (p0.y - this.centerY) * dpr;
+    const x1 = (p1.x - this.centerX) * dpr;
+    const y1 = (p1.y - this.centerY) * dpr;
 
-    // 8-Fold Radial Kaleidoscopic Symmetry (with reflection across petals = 16-segment sacred symmetry)
+    // 8-Fold Radial Kaleidoscopic Symmetry (with reflection across petals = 16-segment symmetry)
     const segments = 8;
     const angleStep = (Math.PI * 2) / segments;
 
@@ -418,13 +522,13 @@ export class MandalaBloomController {
 
   playRadialTone(pos) {
     const now = Date.now();
-    if (now - this.lastAudioTime < 95) return; // Throttled to serene musical pace
+    if (now - this.lastAudioTime < 90) return; // Serene musical pace
 
     const dx = pos.x - this.centerX;
     const dy = pos.y - this.centerY;
     const dist = Math.hypot(dx, dy);
     const maxRadius = this.size / 2;
-    const ratio = Math.min(dist / maxRadius, 1.0);
+    const ratio = Math.min(dist / Math.max(1, maxRadius), 1.0);
 
     // Map distance to pentatonic scale: C4, D4, E4, G4, A4, C5, D5, E5, G5, A5, C6
     const pentatonicFrequencies = [
@@ -435,7 +539,7 @@ export class MandalaBloomController {
     const freq = pentatonicFrequencies[index];
 
     // Pan based on horizontal position relative to center (-1 to +1)
-    const pan = Math.max(-0.9, Math.min(0.9, dx / (this.size / 2)));
+    const pan = Math.max(-0.9, Math.min(0.9, dx / Math.max(1, this.size / 2)));
 
     audioSynth.playMandalaHarmonic(freq, pan);
     this.lastAudioTime = now;
@@ -451,7 +555,10 @@ export class MandalaBloomController {
       const expCtx = exportCanvas.getContext('2d');
 
       // Gradient background
-      const grad = expCtx.createRadialGradient(exportCanvas.width / 2, exportCanvas.height / 2, 20, exportCanvas.width / 2, exportCanvas.height / 2, exportCanvas.width / 2);
+      const grad = expCtx.createRadialGradient(
+        exportCanvas.width / 2, exportCanvas.height / 2, 20, 
+        exportCanvas.width / 2, exportCanvas.height / 2, exportCanvas.width / 2
+      );
       grad.addColorStop(0, '#0F172A');
       grad.addColorStop(1, '#020617');
       expCtx.fillStyle = grad;
