@@ -1,5 +1,7 @@
 # CalmPop V2 — Workplace Wellbeing & Interactive Calm Platform
 
+> 🌐 **Live Application:** [https://calmpopv2.vercel.app/](https://calmpopv2.vercel.app/)
+
 A proactive, privacy-first workplace wellbeing application designed for employees and teams. CalmPop integrates intelligent pulse surveys, privacy-preserving tenant analytics, an AI-powered Wellbeing Companion, and five mindful interactive stress-relief activities with real-time procedural audio synthesis.
 
 ---
