@@ -114,14 +114,14 @@ export function renderMandalaBloom(sessionManager, options = {}) {
 
       </div>
 
-      <!-- Main Mandala Drawing Stage -->
-      <div id="mandala-stage-container" class="relative w-full max-w-4xl flex-1 min-h-[520px] rounded-3xl overflow-hidden shadow-2xl border border-slate-700/60 bg-[#070A12] flex items-center justify-center">
+      <!-- Main Mandala Drawing Stage (No extra padding or margins, seamless full canvas) -->
+      <div id="mandala-stage-container" class="relative w-full flex-1 min-h-[560px] h-full rounded-3xl overflow-hidden shadow-2xl border border-slate-700/60 bg-[#070A12] flex items-center justify-center">
         
-        <!-- Interactive 8-Fold Mandala Drawing Canvas (Takes Entire Canvas Area) -->
+        <!-- Interactive 8-Fold Mandala Drawing Canvas (Takes 100% of the entire viewport area) -->
         <canvas 
           id="mandala-bloom-canvas" 
           class="w-full h-full block cursor-crosshair touch-none"
-          style="touch-action: none;"
+          style="touch-action: none; display: block;"
         ></canvas>
 
         <!-- Tap Guidance Hint -->
@@ -133,7 +133,7 @@ export function renderMandalaBloom(sessionManager, options = {}) {
       </div>
 
       <!-- Bottom Guidance Note -->
-      <div class="mt-3 text-center text-outline text-[11px] flex items-center gap-2">
+      <div class="mt-2 text-center text-outline text-[11px] flex items-center gap-2">
         <span class="material-symbols-outlined text-[14px] text-primary">grain</span>
         <span>Eight-fold kaleidoscopic symmetry with harmonic pentatonic bell tones mapped to canvas radius.</span>
       </div>
@@ -203,8 +203,9 @@ export class MandalaBloomController {
     const rect = parent.getBoundingClientRect();
     const dpr = Math.max(window.devicePixelRatio || 1, 2); // High-DPI crisp antialiased rendering
     
-    const width = Math.max(300, Math.floor(rect.width || 800));
-    const height = Math.max(320, Math.floor(rect.height || 520));
+    // Accurate pixel dimensions of container
+    const width = Math.max(300, Math.floor(parent.clientWidth || rect.width || 800));
+    const height = Math.max(360, Math.floor(parent.clientHeight || rect.height || 560));
 
     this.dpr = dpr;
     this.canvas.width = width * dpr;
