@@ -1,205 +1,218 @@
-// CalmPop - Games Catalog & Factory Registry
-// Registers all 12 stress-relief games with metadata, custom SVG brand illustrations,
-// duration options, and renderer/controller bindings.
+// CalmPop - Games Catalog & Registry
+// Exclusively registers the four interactive stress-relief activities:
+// 1. Zen Sand (Focus - Tired, Overwhelmed)
+// 2. Calm Keys (Auditory - Anxious, Sad)
+// 3. Star Catcher (Focus - Sad, Restless)
+// 4. Mandala Bloom (Creative - Restless, Okay)
 
-import { renderBreatheGarden, BreatheGardenController } from './implementations/breatheGarden.js';
-import { renderFocusFlow, FocusFlowController } from './implementations/focusFlow.js';
-import { renderThoughtReframer, ThoughtReframerController } from './implementations/thoughtReframer.js';
-import { renderCalmRiver, CalmRiverController } from './implementations/calmRiver.js';
-import { renderInkstorm, InkstormController } from './implementations/inkstorm.js';
-import { renderEmotionWeather, EmotionWeatherController } from './implementations/emotionWeather.js';
-import { renderGroundingExplorer, GroundingExplorerController } from './implementations/groundingExplorer.js';
-import { renderTensionReleaseIslands, TensionReleaseIslandsController } from './implementations/tensionReleaseIslands.js';
-import { renderMemoryMeadow, MemoryMeadowController } from './implementations/memoryMeadow.js';
-import { renderPaperCranes, PaperCranesController } from './implementations/paperCranes.js';
-import { renderWorryBalloon, WorryBalloonController } from './implementations/worryBalloon.js';
-import { renderKindnessQuest, KindnessQuestController } from './implementations/kindnessQuest.js';
+import { renderZenSand, ZenSandController } from './implementations/zenSand.js';
+import { renderCalmKeys, CalmKeysController } from './implementations/calmKeys.js';
+import { renderStarCatcher, StarCatcherController } from './implementations/starCatcher.js';
+import { renderMandalaBloom, MandalaBloomController } from './implementations/mandalaBloom.js';
 
 export const GAMES_CATALOG = [
-  // --- MILESTONE 1 GAMES ---
   {
-    id: 'breathe-garden',
-    title: 'Breathe Garden',
-    category: 'Breathing',
+    id: 'zen-sand',
+    title: 'Zen Sand',
+    category: 'Focus',
+    recommendedMoods: ['Tired', 'Overwhelmed'],
     typicalDuration: '3 min',
     defaultDuration: 180,
-    durationOptions: [120, 180, 240, 300],
-    description: 'Nurture a magical blooming garden through gentle 4s inhale and 6s exhale cycles.',
-    instructions: 'Follow the glowing orb as it gently expands (4 seconds) and contracts (6 seconds). As you breathe, leaves unfurl, blossoms bloom, and fireflies arrive. Stop whenever you wish.',
-    badge: 'Milestone 1',
-    icon: 'spa',
-    color: 'from-cyan-500/10 to-lime-500/10 text-cyan-600',
-    render: (sm, opts) => renderBreatheGarden(sm, opts),
-    createController: (sm, opts) => new BreatheGardenController(sm, opts)
+    durationOptions: [120, 180, 300],
+    description: 'Carve peaceful rake grooves in a tactile sand garden with gentle ocean wave smoothing.',
+    instructions: 'Drag your mouse or touch to guide a 3-tine bamboo rake through warm grains. Place smooth basalt river stones, or activate Wave Smoothing to gently wash the garden clean.',
+    soundDescription: 'Filtered, whispering sand friction & gentle ocean wash',
+    badge: 'Tactile Garden',
+    icon: 'draw',
+    color: 'from-amber-600/15 via-orange-500/10 to-amber-700/15 text-amber-800',
+    route: '/employee/games/zen-sand',
+    hashRoute: '#employee/games/zen-sand',
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 120" class="w-full h-full object-cover">
+        <defs>
+          <linearGradient id="sandBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#EADAB5"/>
+            <stop offset="100%" stop-color="#D6BF93"/>
+          </linearGradient>
+          <filter id="sandShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#554025" flood-opacity="0.3"/>
+          </filter>
+        </defs>
+        <!-- Sand Bed -->
+        <rect width="200" height="120" fill="url(#sandBg)" rx="16"/>
+        <!-- Rake Grooves -->
+        <path d="M 20,40 Q 70,25 110,45 T 180,35" stroke="#7A5E38" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+        <path d="M 20,54 Q 70,39 110,59 T 180,49" stroke="#7A5E38" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+        <path d="M 20,68 Q 70,53 110,73 T 180,63" stroke="#7A5E38" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+        <!-- Circular Sand Ripple -->
+        <circle cx="145" cy="80" r="22" stroke="#7A5E38" stroke-width="2.5" fill="none" opacity="0.5"/>
+        <circle cx="145" cy="80" r="14" stroke="#7A5E38" stroke-width="2.5" fill="none" opacity="0.4"/>
+        <!-- Zen River Stones -->
+        <ellipse cx="145" cy="80" rx="9" ry="7" fill="#3D4148" filter="url(#sandShadow)"/>
+        <ellipse cx="50" cy="85" rx="14" ry="10" fill="#4B5244" filter="url(#sandShadow)"/>
+        <ellipse cx="58" cy="78" rx="8" ry="6" fill="#665D50" filter="url(#sandShadow)"/>
+      </svg>
+    `,
+    render: (sm, opts) => renderZenSand(sm, opts),
+    createController: (sm, opts) => new ZenSandController(sm, opts)
   },
   {
-    id: 'focus-flow',
-    title: 'Focus Flow',
-    category: 'Puzzles',
-    typicalDuration: '5 min',
-    defaultDuration: 300,
-    durationOptions: [180, 300, 420],
-    description: 'A tactile, calming symbol match puzzle with smooth cascades, undo, and hints.',
-    instructions: 'Swap adjacent symbols to create gentle lines of 3 or more. Enjoy the soft chimes and cascades. No timer, no lives, and unlimited undos.',
-    badge: 'Milestone 1',
-    icon: 'grid_view',
-    color: 'from-primary/10 to-cyan-500/10 text-primary',
-    render: (sm, opts) => renderFocusFlow(sm, opts),
-    createController: (sm, opts) => new FocusFlowController(sm, opts)
-  },
-  {
-    id: 'thought-reframer',
-    title: 'Thought Reframer',
-    category: 'Reflection',
-    typicalDuration: '3 min',
-    defaultDuration: 180,
-    durationOptions: [120, 180, 240],
-    description: 'CBT-inspired 5-step reflection separating concrete facts from worst-case predictions.',
-    instructions: 'Examine a stressful thought step-by-step: what is fact, what is an assumption, what is an alternative view, and what is one realistic next step. Saved strictly private.',
-    badge: 'Milestone 1',
-    icon: 'psychology',
-    color: 'from-amber-500/10 to-primary/10 text-amber-600',
-    render: (sm, opts) => renderThoughtReframer(sm, opts),
-    createController: (sm, opts) => new ThoughtReframerController(sm, opts)
-  },
-
-  // --- MILESTONE 2 GAMES ---
-  {
-    id: 'calm-river',
-    title: 'Calm River',
-    category: 'Relaxation',
-    typicalDuration: '4 min',
-    defaultDuration: 240,
-    durationOptions: [120, 180, 240, 360],
-    description: 'Guide an origami paper boat along a tranquil river with gentle visual breathing cues.',
-    instructions: 'Steer your paper boat left and right using Arrow keys, A/D, or touch dragging. Glide around water lilies and smooth river stones without penalty.',
-    badge: 'Milestone 2',
-    icon: 'sailing',
-    color: 'from-sky-500/10 to-blue-500/10 text-sky-600',
-    render: (sm, opts) => renderCalmRiver(sm, opts),
-    createController: (sm, opts) => new CalmRiverController(sm, opts)
-  },
-  {
-    id: 'inkstorm',
-    title: 'Inkstorm',
-    category: 'Creative',
+    id: 'calm-keys',
+    title: 'Calm Keys',
+    category: 'Auditory',
+    recommendedMoods: ['Anxious', 'Sad'],
     typicalDuration: '4 min',
     defaultDuration: 240,
     durationOptions: [120, 240, 360],
-    description: 'Creative fluid ink painting canvas with brushes, erasing, undo/redo, and private saving.',
-    instructions: 'Paint with flowing watercolors, choose soothing palettes, adjust brush size, and transform the canvas at your own pace. Export or save privately.',
-    badge: 'Milestone 2',
-    icon: 'palette',
-    color: 'from-violet-500/10 to-pink-500/10 text-violet-600',
-    render: (sm, opts) => renderInkstorm(sm, opts),
-    createController: (sm, opts) => new InkstormController(sm, opts)
+    description: 'Serene Diatonic C Major and pentatonic chime keys with shimmering bell harmonics.',
+    instructions: 'Tap or click sculpted musical chime bars (or use keyboard keys A–L) to release pure harmonic bell overtones. Explore peaceful melodic phrases without failure or score.',
+    soundDescription: 'Pure bell overtones, harmonic partials & overtone shimmer',
+    badge: 'Harmonic Chimes',
+    icon: 'music_note',
+    color: 'from-sky-500/15 via-cyan-400/10 to-primary/15 text-primary',
+    route: '/employee/games/calm-keys',
+    hashRoute: '#employee/games/calm-keys',
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 120" class="w-full h-full object-cover">
+        <defs>
+          <linearGradient id="chimeBg" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F8FAFC"/>
+            <stop offset="100%" stop-color="#E2E8F0"/>
+          </linearGradient>
+          <linearGradient id="keyGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#18B9ED"/>
+            <stop offset="100%" stop-color="#C9F246"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="120" fill="url(#chimeBg)" rx="16"/>
+        <!-- Harmonic Wave Ripples -->
+        <circle cx="100" cy="50" r="38" stroke="#18B9ED" stroke-width="1.5" fill="none" opacity="0.3"/>
+        <circle cx="100" cy="50" r="24" stroke="#18B9ED" stroke-width="1.5" fill="none" opacity="0.5"/>
+        <!-- Chime Bars -->
+        <rect x="25" y="25" width="16" height="75" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <circle cx="33" cy="35" r="3" fill="#18B9ED"/>
+        <rect x="47" y="30" width="16" height="70" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <circle cx="55" cy="40" r="3" fill="#38BDF8"/>
+        <rect x="69" y="35" width="16" height="65" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <circle cx="77" cy="45" r="3" fill="#34D399"/>
+        <rect x="91" y="22" width="18" height="78" rx="6" fill="#006191" stroke="#004B71" stroke-width="1.5"/>
+        <circle cx="100" cy="34" r="3.5" fill="#C9F246"/>
+        <rect x="115" y="42" width="16" height="58" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <circle cx="123" cy="52" r="3" fill="#FBBF24"/>
+        <rect x="137" y="47" width="16" height="53" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <circle cx="145" cy="57" r="3" fill="#FB923C"/>
+        <rect x="159" y="52" width="16" height="48" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+        <circle cx="167" cy="62" r="3" fill="#F472B6"/>
+      </svg>
+    `,
+    render: (sm, opts) => renderCalmKeys(sm, opts),
+    createController: (sm, opts) => new CalmKeysController(sm, opts)
   },
   {
-    id: 'emotion-weather',
-    title: 'Emotion Weather Report',
-    category: 'Reflection',
+    id: 'star-catcher',
+    title: 'Star Catcher',
+    category: 'Focus',
+    recommendedMoods: ['Sad', 'Restless'],
     typicalDuration: '3 min',
     defaultDuration: 180,
-    durationOptions: [120, 180, 240],
-    description: 'Build your personal internal weather scene with fog, sunshine, wind, rain, and clouds.',
-    instructions: 'Select the elements that describe your present atmosphere. Add optional context tags or private notes. Displays a factual, non-judgmental summary.',
-    badge: 'Milestone 2',
-    icon: 'cloudy_snowing',
-    color: 'from-sky-400/10 to-slate-400/10 text-sky-600',
-    render: (sm, opts) => renderEmotionWeather(sm, opts),
-    createController: (sm, opts) => new EmotionWeatherController(sm, opts)
+    durationOptions: [120, 180, 300],
+    description: 'Guide soft drifting stars across a celestial sky and trigger delicate stardust sparkle bursts.',
+    instructions: 'Tap or click floating stars to release glowing stardust cascades. Sit back, breathe, and enjoy a calming cosmic drift with zero stress, targets, or timers.',
+    soundDescription: 'Celestial chime sparkle bursts & crystalline overtones',
+    badge: 'Celestial Focus',
+    icon: 'stars',
+    color: 'from-cyan-500/15 via-teal-400/10 to-blue-500/15 text-cyan-700',
+    route: '/employee/games/star-catcher',
+    hashRoute: '#employee/games/star-catcher',
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 120" class="w-full h-full object-cover">
+        <defs>
+          <linearGradient id="starSky" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#E0F2FE"/>
+            <stop offset="50%" stop-color="#BAE6FD"/>
+            <stop offset="100%" stop-color="#7DD3FC"/>
+          </linearGradient>
+          <radialGradient id="starBurstGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+            <stop offset="40%" stop-color="#C9F246" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#18B9ED" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="200" height="120" fill="url(#starSky)" rx="16"/>
+        <!-- Constellation Lines -->
+        <line x1="30" y1="40" x2="75" y2="25" stroke="#FFFFFF" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.6"/>
+        <line x1="75" y1="25" x2="120" y2="55" stroke="#FFFFFF" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.6"/>
+        <line x1="120" y1="55" x2="165" y2="35" stroke="#FFFFFF" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.6"/>
+        <!-- Drifting Stars -->
+        <circle cx="30" cy="40" r="4.5" fill="#FFFFFF"/>
+        <circle cx="75" cy="25" r="5" fill="#FFFFFF"/>
+        <circle cx="165" cy="35" r="4" fill="#FFFFFF"/>
+        <circle cx="45" cy="85" r="3.5" fill="#FFFFFF" opacity="0.8"/>
+        <circle cx="170" cy="80" r="3" fill="#FFFFFF" opacity="0.8"/>
+        <!-- Stardust Burst Center -->
+        <circle cx="120" cy="55" r="22" fill="url(#starBurstGlow)"/>
+        <!-- Star 4-Point Diamond -->
+        <path d="M 120,43 Q 120,55 132,55 Q 120,55 120,67 Q 120,55 108,55 Q 120,55 120,43 Z" fill="#FFFFFF"/>
+        <!-- Sparkle Dust Particles -->
+        <circle cx="105" cy="42" r="1.8" fill="#C9F246"/>
+        <circle cx="134" cy="44" r="1.5" fill="#C9F246"/>
+        <circle cx="110" cy="70" r="2" fill="#FFFFFF"/>
+        <circle cx="132" cy="68" r="1.6" fill="#18B9ED"/>
+        <circle cx="138" cy="58" r="1.8" fill="#FFFFFF"/>
+      </svg>
+    `,
+    render: (sm, opts) => renderStarCatcher(sm, opts),
+    createController: (sm, opts) => new StarCatcherController(sm, opts)
   },
   {
-    id: 'grounding-explorer',
-    title: 'Grounding Explorer',
-    category: 'Grounding',
-    typicalDuration: '3 min',
-    defaultDuration: 180,
-    durationOptions: [120, 180, 240],
-    description: '5-4-3-2-1 sensory grounding exercise with gentle alternatives and self-pacing.',
-    instructions: 'Engage with your physical surroundings: 5 things to see, 4 to feel, 3 to hear, 2 to smell, 1 to taste or appreciate. Skip any sense that feels uncomfortable.',
-    badge: 'Milestone 2',
-    icon: 'nature_people',
-    color: 'from-emerald-500/10 to-lime-500/10 text-emerald-600',
-    render: (sm, opts) => renderGroundingExplorer(sm, opts),
-    createController: (sm, opts) => new GroundingExplorerController(sm, opts)
-  },
-  {
-    id: 'tension-islands',
-    title: 'Tension Release Islands',
-    category: 'Relaxation',
-    typicalDuration: '4 min',
-    defaultDuration: 240,
-    durationOptions: [120, 180, 240, 360],
-    description: 'Island-hopping body relaxation across hands, shoulders, jaw, arms, and feet.',
-    instructions: 'Hop across 5 relaxation islands. Choose between gentle squeeze-and-release or pure passive mindful softening. Skip any area at any time.',
-    badge: 'Milestone 2',
-    icon: 'waves',
-    color: 'from-amber-400/10 to-teal-400/10 text-teal-700',
-    render: (sm, opts) => renderTensionReleaseIslands(sm, opts),
-    createController: (sm, opts) => new TensionReleaseIslandsController(sm, opts)
-  },
-
-  // --- MILESTONE 3 GAMES ---
-  {
-    id: 'memory-meadow',
-    title: 'Memory Meadow',
-    category: 'Puzzles',
-    typicalDuration: '3 min',
-    defaultDuration: 180,
-    durationOptions: [120, 180, 240],
-    description: 'Soothing nature card matching with gentle flip animations and unlimited attempts.',
-    instructions: 'Flip two cards per turn to discover pairs of blossoms, ferns, and songbirds. Choose from 4, 6, or 8 pairs without any timer or stress penalties.',
-    badge: 'Milestone 3',
-    icon: 'view_cozy',
-    color: 'from-lime-500/10 to-teal-500/10 text-lime-700',
-    render: (sm, opts) => renderMemoryMeadow(sm, opts),
-    createController: (sm, opts) => new MemoryMeadowController(sm, opts)
-  },
-  {
-    id: 'paper-cranes',
-    title: 'Paper Cranes',
-    category: 'Stories',
-    typicalDuration: '3 min',
-    defaultDuration: 180,
-    durationOptions: [120, 180, 240],
-    description: 'Fold a virtual origami crane for one realistic action, with folding animation and flight.',
-    instructions: 'Select an action category (small task, break, support, tomorrow, enjoyment). Customize your crane and watch it take flight into the open sky.',
-    badge: 'Milestone 3',
-    icon: 'flutter',
-    color: 'from-cyan-400/10 to-primary/10 text-cyan-700',
-    render: (sm, opts) => renderPaperCranes(sm, opts),
-    createController: (sm, opts) => new PaperCranesController(sm, opts)
-  },
-  {
-    id: 'worry-balloon',
-    title: 'Worry Balloon Release',
-    category: 'Reflection',
-    typicalDuration: '3 min',
-    defaultDuration: 180,
-    durationOptions: [120, 180, 240],
-    description: 'Sort concerns into 4 grounded categories and release a hot air balloon into twilight.',
-    instructions: 'Categorize a worry into what you can act on, revisit later, cannot control, or discuss. Animate a hot air balloon drifting into the twilight sky.',
-    badge: 'Milestone 3',
-    icon: 'airplanemode_active',
-    color: 'from-indigo-500/10 to-purple-500/10 text-indigo-600',
-    render: (sm, opts) => renderWorryBalloon(sm, opts),
-    createController: (sm, opts) => new WorryBalloonController(sm, opts)
-  },
-  {
-    id: 'kindness-quest',
-    title: 'Kindness Quest',
-    category: 'Stories',
+    id: 'mandala-bloom',
+    title: 'Mandala Bloom',
+    category: 'Creative',
+    recommendedMoods: ['Restless', 'Okay'],
     typicalDuration: '4 min',
     defaultDuration: 240,
     durationOptions: [180, 240, 360],
-    description: 'Branching story game navigating everyday workplace overwhelm with self-compassion.',
-    instructions: 'Guide Pip through an overgrown greenhouse morning. Make choices involving self-compassion, asking for help, taking breaks, and setting healthy boundaries.',
-    badge: 'Milestone 3',
-    icon: 'auto_stories',
-    color: 'from-rose-500/10 to-amber-500/10 text-rose-600',
-    render: (sm, opts) => renderKindnessQuest(sm, opts),
-    createController: (sm, opts) => new KindnessQuestController(sm, opts)
+    description: 'Eight-fold radial kaleidoscopic drawing in shifting pastels with harmonic bell tones.',
+    instructions: 'Draw fluid strokes on the circular canvas. Each motion blossoms outward in 8-fold sacred symmetry with harmonic pentatonic bell tones mapped to the distance from center.',
+    soundDescription: 'Harmonic pentatonic bell tones mapped to canvas radius',
+    badge: 'Kaleidoscope Art',
+    icon: 'auto_awesome',
+    color: 'from-violet-500/15 via-pink-400/10 to-teal-400/15 text-violet-700',
+    route: '/employee/games/mandala-bloom',
+    hashRoute: '#employee/games/mandala-bloom',
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 120" class="w-full h-full object-cover">
+        <defs>
+          <linearGradient id="mandalaBg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0F172A"/>
+            <stop offset="100%" stop-color="#1E293B"/>
+          </linearGradient>
+        </defs>
+        <rect width="200" height="120" fill="url(#mandalaBg)" rx="16"/>
+        <!-- Outer Glowing Circle -->
+        <circle cx="100" cy="60" r="48" stroke="#38BDF8" stroke-width="1.2" fill="none" opacity="0.35"/>
+        <circle cx="100" cy="60" r="32" stroke="#C084FC" stroke-width="1.2" fill="none" opacity="0.4"/>
+        <circle cx="100" cy="60" r="16" stroke="#C9F246" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <!-- 8-Fold Radial Petals -->
+        <g transform="translate(100, 60)">
+          <!-- Petal 0 & 4 -->
+          <path d="M 0,0 C -10,-20 -5,-38 0,-44 C 5,-38 10,-20 0,0" fill="none" stroke="#38BDF8" stroke-width="2"/>
+          <path d="M 0,0 C -10,20 -5,38 0,44 C 5,38 10,20 0,0" fill="none" stroke="#38BDF8" stroke-width="2"/>
+          <!-- Petal 2 & 6 -->
+          <path d="M 0,0 C -20,-10 -38,-5 -44,0 C -38,5 -20,10 0,0" fill="none" stroke="#38BDF8" stroke-width="2"/>
+          <path d="M 0,0 C 20,-10 38,-5 44,0 C 38,5 20,10 0,0" fill="none" stroke="#38BDF8" stroke-width="2"/>
+          <!-- Diagonal Petals -->
+          <path d="M 0,0 C -22,-8 -32,-32 0,0" fill="none" stroke="#C084FC" stroke-width="1.8"/>
+          <path d="M 0,0 C 22,8 32,32 0,0" fill="none" stroke="#C084FC" stroke-width="1.8"/>
+          <path d="M 0,0 C -8,22 -32,32 0,0" fill="none" stroke="#F472B6" stroke-width="1.8"/>
+          <path d="M 0,0 C 8,-22 32,-32 0,0" fill="none" stroke="#F472B6" stroke-width="1.8"/>
+          <!-- Central Seed Blossom -->
+          <circle cx="0" cy="0" r="4" fill="#C9F246"/>
+        </g>
+      </svg>
+    `,
+    render: (sm, opts) => renderMandalaBloom(sm, opts),
+    createController: (sm, opts) => new MandalaBloomController(sm, opts)
   }
 ];
 

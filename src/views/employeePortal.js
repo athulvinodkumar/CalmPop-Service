@@ -186,9 +186,9 @@ function renderPortalLayout(container, employee, dashboard, subtab) {
             <button 
               type="button" 
               onclick="window.navigateView('employee', 'games')"
-              class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all ${subtab === 'games' ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low'}"
+              class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all ${(subtab === 'games' || subtab.startsWith('games/')) ? 'bg-primary text-on-primary shadow-sm' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low'}"
             >
-              <span class="material-symbols-outlined text-[20px] ${subtab === 'games' ? 'text-white' : 'text-outline'}">sports_esports</span>
+              <span class="material-symbols-outlined text-[20px] ${(subtab === 'games' || subtab.startsWith('games/')) ? 'text-white' : 'text-outline'}">sports_esports</span>
               <span>Games</span>
             </button>
 
@@ -233,7 +233,6 @@ function renderPortalLayout(container, employee, dashboard, subtab) {
         <div class="px-4 py-3 flex items-center justify-between">
           <a href="#employee" onclick="window.navigateView('employee', 'home')" class="flex items-center gap-2">
             <img alt="CalmPop Logo" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WGEh00kXjxC-nRTncmjpGib0cLyCbt9ALqLbrBhfdig6r5L9wi5sgO3MFI_wd_iXaIRyJFIkstCjbWXKwffm7ECqDcLAgv5Kcx0KpXhprJ8ki9DKEbQHcSDfDUDG0RctReHBwPpK-6UbUizp5IS9wtVcYr8HNxHH54u-v3orL0pZ037sUoCqRDo4S_OsT7sylMzGbyHL6ETa-ofrjs0QX37bw6xNCP8HNV9iAL4K1meefYhcZo474dido-"/>
-            <span class="font-bold text-sm text-on-surface">CalmPop</span>
           </a>
 
           <div class="flex items-center gap-2">
@@ -254,7 +253,7 @@ function renderPortalLayout(container, employee, dashboard, subtab) {
           <button onclick="window.navigateView('employee', 'survey'); window.toggleEmployeeMobileDrawer(true);" class="w-full text-left py-2 px-3 rounded-xl text-xs font-semibold ${subtab === 'survey' ? 'bg-primary text-white' : 'text-on-surface'}">Weekly Survey ${isCheckinDue ? '• Due' : ''}</button>
           <button onclick="window.navigateView('employee', 'wellbeing'); window.toggleEmployeeMobileDrawer(true);" class="w-full text-left py-2 px-3 rounded-xl text-xs font-semibold ${subtab === 'wellbeing' ? 'bg-primary text-white' : 'text-on-surface'}">My Wellbeing</button>
           <button onclick="window.navigateView('employee', 'companion'); window.toggleEmployeeMobileDrawer(true);" class="w-full text-left py-2 px-3 rounded-xl text-xs font-semibold ${subtab === 'companion' ? 'bg-primary text-white' : 'text-on-surface'}">AI Companion</button>
-          <button onclick="window.navigateView('employee', 'games'); window.toggleEmployeeMobileDrawer(true);" class="w-full text-left py-2 px-3 rounded-xl text-xs font-semibold ${subtab === 'games' ? 'bg-primary text-white' : 'text-on-surface'}">Games</button>
+          <button onclick="window.navigateView('employee', 'games'); window.toggleEmployeeMobileDrawer(true);" class="w-full text-left py-2 px-3 rounded-xl text-xs font-semibold ${(subtab === 'games' || subtab.startsWith('games/')) ? 'bg-primary text-white' : 'text-on-surface'}">Games</button>
           <button onclick="window.navigateView('employee', 'account'); window.toggleEmployeeMobileDrawer(true);" class="w-full text-left py-2 px-3 rounded-xl text-xs font-semibold ${subtab === 'account' ? 'bg-primary text-white' : 'text-on-surface'}">My Account</button>
           <button onclick="window.handleEmployeeLogout()" class="w-full text-left py-2 px-3 rounded-xl text-xs font-semibold text-error">Log Out</button>
         </div>
@@ -271,8 +270,9 @@ function renderPortalLayout(container, employee, dashboard, subtab) {
   // Post-render lifecycle setups
   if (subtab === 'survey') {
     initSurveyLifecycle();
-  } else if (subtab === 'games') {
-    renderGamesLibrary('games-page-root');
+  } else if (subtab === 'games' || subtab.startsWith('games/')) {
+    const requestedGameId = subtab.startsWith('games/') ? subtab.replace('games/', '') : null;
+    renderGamesLibrary('games-page-root', requestedGameId);
   } else if (subtab === 'companion') {
     renderCompanionView('companion-view-root');
   }
@@ -280,6 +280,9 @@ function renderPortalLayout(container, employee, dashboard, subtab) {
 
 // Router switcher for subtabs
 function renderSubtabView(subtab, employee, dashboard) {
+  if (subtab === 'games' || subtab.startsWith('games/')) {
+    return renderGamesPage();
+  }
   switch (subtab) {
     case 'survey':
       return renderSurveyPage();
@@ -287,8 +290,6 @@ function renderSubtabView(subtab, employee, dashboard) {
       return renderWellbeingPage(employee);
     case 'companion':
       return `<div id="companion-view-root"></div>`;
-    case 'games':
-      return renderGamesPage();
     case 'account':
       return renderAccountPage(employee);
     case 'home':

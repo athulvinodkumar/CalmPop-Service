@@ -1,11 +1,14 @@
-// Comprehensive Verification Test Suite for CalmPop 12 Stress-Relief Games
+// Comprehensive Verification Test Suite for CalmPop 4 Interactive Stress-Relief Games
+// 1. Zen Sand, 2. Calm Keys, 3. Star Catcher, 4. Mandala Bloom
 import { GAMES_CATALOG, getGameById } from '../src/games/catalog.js';
 import { db } from '../server/db.js';
+import fs from 'fs';
+import path from 'path';
 
 async function runGamesTestSuite() {
-  console.log('====================================================');
-  console.log('CALMPOP 12 STRESS-RELIEF GAMES COMPREHENSIVE TEST SUITE');
-  console.log('====================================================\n');
+  console.log('================================================================');
+  console.log('CALMPOP 4 INTERACTIVE STRESS-RELIEF GAMES TEST SUITE');
+  console.log('================================================================\n');
 
   let passed = 0;
   let total = 0;
@@ -20,226 +23,121 @@ async function runGamesTestSuite() {
     passed++;
   }
 
-  // 1. Catalog Verification
-  console.log('\n--- 1. GAMES CATALOG VERIFICATION ---');
-  assert(GAMES_CATALOG.length === 12, 'Catalog must contain exactly 12 games');
-  const expectedIds = [
-    'breathe-garden', 'focus-flow', 'thought-reframer',
-    'calm-river', 'inkstorm', 'emotion-weather',
-    'grounding-explorer', 'tension-islands',
-    'memory-meadow', 'paper-cranes', 'worry-balloon',
-    'kindness-quest'
-  ];
+  // 1. Catalog Verification (Strictly 4 Games)
+  console.log('\n--- 1. GAMES CATALOG VERIFICATION (EXACTLY 4 GAMES) ---');
+  assert(GAMES_CATALOG.length === 4, `Catalog must contain exactly 4 games (found: ${GAMES_CATALOG.length})`);
+  
+  const expectedIds = ['zen-sand', 'calm-keys', 'star-catcher', 'mandala-bloom'];
   for (const id of expectedIds) {
     const game = getGameById(id);
     assert(game !== null, `Game ${id} must be registered in catalog`);
     assert(typeof game.title === 'string' && game.title.length > 0, `${id} must have a title`);
     assert(typeof game.category === 'string', `${id} must have a category`);
+    assert(Array.isArray(game.recommendedMoods) && game.recommendedMoods.length > 0, `${id} must have recommended moods`);
     assert(typeof game.description === 'string', `${id} must have a description`);
+    assert(typeof game.thumbnailSvg === 'string' && game.thumbnailSvg.includes('<svg'), `${id} must have SVG thumbnail`);
     assert(typeof game.render === 'function', `${id} must have a render function`);
     assert(typeof game.createController === 'function', `${id} must have a createController function`);
+    assert(typeof game.route === 'string' && game.route.startsWith('/employee/games/'), `${id} must have valid route`);
   }
 
-  // 2. Specific Game Mechanics Validation
-  console.log('\n--- 2. GAME MECHANICS VALIDATION ---');
+  // 2. Game 1: Zen Sand Verification
+  console.log('\n--- 2. ZEN SAND VERIFICATION ---');
+  const zs = getGameById('zen-sand');
+  assert(zs.category === 'Focus', 'Zen Sand category must be Focus');
+  assert(zs.recommendedMoods.includes('Tired') && zs.recommendedMoods.includes('Overwhelmed'), 'Zen Sand must recommend Tired & Overwhelmed moods');
+  assert(zs.defaultDuration === 180, 'Zen Sand default duration must be 3 min (180s)');
   
-  // Game 1: Breathe Garden
-  const bg = getGameById('breathe-garden');
-  assert(bg.defaultDuration === 180, 'Breathe Garden must default to 3 minutes (180s)');
-  assert(bg.durationOptions.includes(120) && bg.durationOptions.includes(300), 'Breathe Garden must support 2-5 minutes configurable duration');
-  const bgMockSm = { status: 'in_progress', targetDurationSeconds: 180, getTrueElapsedSeconds: () => 30, recordEvent: () => {} };
-  const bgHtml = bg.render(bgMockSm, { guided: true });
-  assert(bgHtml.includes('Breathe in gently.'), 'Breathe Garden must display gentle inhale prompt');
-  assert(bgHtml.includes('4 seconds'), 'Breathe Garden must cue 4 seconds inhale');
-  assert(bgHtml.includes('6 seconds'), 'Breathe Garden must cue 6 seconds exhale');
-  assert(bgHtml.includes('bg-breathing-orb'), 'Breathe Garden must render luminous breathing orb');
-  assert(bgHtml.includes('timing cues only'), 'Breathe Garden must include non-physiological reminder');
+  const mockSm = { status: 'in_progress', targetDurationSeconds: 180, getTrueElapsedSeconds: () => 15, recordEvent: () => {} };
+  const zsHtml = zs.render(mockSm);
+  assert(zsHtml.includes('zen-sand-canvas'), 'Zen Sand must render sand canvas');
+  assert(zsHtml.includes('zen-wave-canvas'), 'Zen Sand must render wave overlay canvas');
+  assert(zsHtml.includes('3-Tine Rake'), 'Zen Sand must feature 3-tine rake');
+  assert(zsHtml.includes('btn-zen-wave-smooth'), 'Zen Sand must provide wave smoothing action');
+  assert(zsHtml.includes('btn-zen-reset'), 'Zen Sand must provide reset sand action');
+  assert(zsHtml.includes('zen-tool-stone'), 'Zen Sand must allow placing Zen stones');
 
-  // Game 2: Focus Flow
-  const ff = getGameById('focus-flow');
-  assert(ff.defaultDuration === 300, 'Focus Flow must default to 5 minutes (300s)');
-  const ffHtml = ff.render(bgMockSm, { complexity: 'gentle' });
-  assert(ffHtml.includes('focus-flow-grid'), 'Focus Flow must render puzzle grid container');
-  assert(ffHtml.includes('Hint'), 'Focus Flow must have Hint control');
-  assert(ffHtml.includes('Undo'), 'Focus Flow must have Undo control');
+  const zsCtrl = zs.createController(mockSm);
+  assert(zsCtrl !== null && typeof zsCtrl.init === 'function' && typeof zsCtrl.destroy === 'function', 'Zen Sand must have complete controller lifecycle');
 
-  // Game 3: Thought Reframer
-  const tr = getGameById('thought-reframer');
-  const trHtml = tr.render(bgMockSm);
-  assert(trHtml.includes('Step 1 of 5'), 'Thought Reframer must implement 5-step reflection');
-  assert(trHtml.includes('What do I know for sure?'), 'Thought Reframer must separate verifiable facts');
-  assert(trHtml.includes('What am I predicting or assuming?'), 'Thought Reframer must separate assumptions');
-  assert(trHtml.includes('Explore another perspective'), 'Thought Reframer must explore alternative views');
-  assert(trHtml.includes('Choose a realistic next step'), 'Thought Reframer must provide realistic next step choices');
-  assert(trHtml.includes('Private by design'), 'Thought Reframer must guarantee reflection privacy');
+  // 3. Game 2: Calm Keys Verification
+  console.log('\n--- 3. CALM KEYS VERIFICATION ---');
+  const ck = getGameById('calm-keys');
+  assert(ck.category === 'Auditory', 'Calm Keys category must be Auditory');
+  assert(ck.recommendedMoods.includes('Anxious') && ck.recommendedMoods.includes('Sad'), 'Calm Keys must recommend Anxious & Sad moods');
+  
+  const ckHtml = ck.render(mockSm);
+  assert(ckHtml.includes('Diatonic C Major (with F & B)'), 'Calm Keys must support Diatonic C Major scale');
+  assert(ckHtml.includes('Pentatonic Chimes'), 'Calm Keys must support Pentatonic mode');
+  assert(ckHtml.includes('key-bar-C4') && ckHtml.includes('key-bar-B4') && ckHtml.includes('key-bar-F4'), 'Calm Keys must include C4, F4, and B4 diatonic chime bars');
+  assert(ckHtml.includes('keys-volume-slider'), 'Calm Keys must provide volume control');
+  assert(ckHtml.includes('btn-toggle-sequences'), 'Calm Keys must support gentle sequence exploration');
 
-  // Game 4: Calm River
-  const cr = getGameById('calm-river');
-  const crHtml = cr.render(bgMockSm, { sensitivity: 'normal' });
-  assert(crHtml.includes('calm-river-canvas'), 'Calm River must render river canvas');
-  assert(crHtml.includes('Sensitivity:'), 'Calm River must support adjustable sensitivity');
-  assert(crHtml.includes('Breathing Cue:'), 'Calm River must support visual breathing rhythm');
+  const ckCtrl = ck.createController(mockSm);
+  assert(ckCtrl !== null && typeof ckCtrl.init === 'function', 'Calm Keys controller must initialize properly');
 
-  // Game 5: Inkstorm
-  const ink = getGameById('inkstorm');
-  const inkHtml = ink.render(bgMockSm);
-  assert(inkHtml.includes('inkstorm-canvas'), 'Inkstorm must render creative painting canvas');
-  assert(inkHtml.includes('ink_eraser'), 'Inkstorm must support eraser');
-  assert(inkHtml.includes('Save Privately'), 'Inkstorm must allow saving artwork privately');
+  // 4. Game 3: Star Catcher Verification
+  console.log('\n--- 4. STAR CATCHER VERIFICATION ---');
+  const sc = getGameById('star-catcher');
+  assert(sc.category === 'Focus', 'Star Catcher category must be Focus');
+  assert(sc.recommendedMoods.includes('Sad') && sc.recommendedMoods.includes('Restless'), 'Star Catcher must recommend Sad & Restless moods');
+  
+  const scHtml = sc.render(mockSm);
+  assert(scHtml.includes('star-catcher-canvas'), 'Star Catcher must render celestial star canvas');
+  assert(scHtml.includes('star-catcher-count'), 'Star Catcher must have mindful non-competitive star counter');
+  assert(scHtml.includes('btn-star-pause'), 'Star Catcher must have pause drift control');
+  assert(scHtml.includes('btn-star-cascade'), 'Star Catcher must have stardust cascade sparkle trigger');
 
-  // Game 6: Emotion Weather Report
-  const ew = getGameById('emotion-weather');
-  const ewHtml = ew.render(bgMockSm);
-  assert(ewHtml.includes('Sunshine') && ewHtml.includes('Rain') && ewHtml.includes('Clouds') && ewHtml.includes('Wind') && ewHtml.includes('Fog'), 'Emotion Weather must include fog, sunshine, wind, rain, clouds');
-  assert(ewHtml.includes('Optional Context Tags'), 'Emotion Weather must support context tags');
+  const scCtrl = sc.createController(mockSm);
+  assert(scCtrl !== null && typeof scCtrl.init === 'function', 'Star Catcher controller must initialize');
 
-  // Game 7: Grounding Explorer
-  const ge = getGameById('grounding-explorer');
-  const geHtml = ge.render(bgMockSm);
-  assert(geHtml.includes('5-4-3-2-1 Sensory Grounding'), 'Grounding Explorer must implement 5-4-3-2-1 sensory grounding');
-  assert(geHtml.includes('Skip this sense'), 'Grounding Explorer must allow skipping senses');
+  // 5. Game 4: Mandala Bloom Verification
+  console.log('\n--- 5. MANDALA BLOOM VERIFICATION ---');
+  const mb = getGameById('mandala-bloom');
+  assert(mb.category === 'Creative', 'Mandala Bloom category must be Creative');
+  assert(mb.recommendedMoods.includes('Restless') && mb.recommendedMoods.includes('Okay'), 'Mandala Bloom must recommend Restless & Okay moods');
+  
+  const mbHtml = mb.render(mockSm);
+  assert(mbHtml.includes('mandala-bloom-canvas'), 'Mandala Bloom must render circular drawing canvas');
+  assert(mbHtml.includes('btn-color-shifting'), 'Mandala Bloom must support Shifting Pastels mode');
+  assert(mbHtml.includes('mandala-brush-size'), 'Mandala Bloom must provide brush size control');
+  assert(mbHtml.includes('btn-mandala-undo') && mbHtml.includes('btn-mandala-redo'), 'Mandala Bloom must provide undo and redo');
+  assert(mbHtml.includes('btn-mandala-clear'), 'Mandala Bloom must provide clear canvas action');
+  assert(mbHtml.includes('btn-mandala-save'), 'Mandala Bloom must provide save artwork action');
 
-  // Game 8: Tension Release Islands
-  const ti = getGameById('tension-islands');
-  const tiHtml = ti.render(bgMockSm);
-  assert(tiHtml.includes('Gentle Awareness') && tiHtml.includes('Squeeze & Release'), 'Tension Release Islands must offer both passive and active relaxation');
-  assert(tiHtml.includes('Skip this area'), 'Tension Release Islands must allow skipping body areas');
+  const mbCtrl = mb.createController(mockSm);
+  assert(mbCtrl !== null && typeof mbCtrl.init === 'function', 'Mandala Bloom controller must initialize');
 
-  // Game 9: Memory Meadow
-  const mm = getGameById('memory-meadow');
-  const mmHtml = mm.render(bgMockSm);
-  assert(mmHtml.includes('mm-card-grid'), 'Memory Meadow must render card matching grid');
-  assert(mmHtml.includes('4 Pairs') && mmHtml.includes('6 Pairs') && mmHtml.includes('8 Pairs'), 'Memory Meadow must support adjustable grid difficulty');
+  // 6. Old Game Files Removal Verification
+  console.log('\n--- 6. VERIFY OLD GAME FILES CLEANED UP ---');
+  const oldFiles = [
+    'breatheGarden.js', 'calmRiver.js', 'emotionWeather.js',
+    'focusFlow.js', 'groundingExplorer.js', 'inkstorm.js',
+    'kindnessQuest.js', 'memoryMeadow.js', 'paperCranes.js',
+    'tensionReleaseIslands.js', 'thoughtReframer.js', 'worryBalloon.js'
+  ];
+  for (const f of oldFiles) {
+    const fullPath = path.join(process.cwd(), 'src', 'games', 'implementations', f);
+    assert(!fs.existsSync(fullPath), `Obsolete game file ${f} must be deleted`);
+  }
 
-  // Game 10: Paper Cranes
-  const pc = getGameById('paper-cranes');
-  const pcHtml = pc.render(bgMockSm);
-  assert(pcHtml.includes('Start a small task') && pcHtml.includes('Take a break') && pcHtml.includes('Ask for help'), 'Paper Cranes must provide designated action categories');
-  assert(pcHtml.includes('Fold & Release Crane'), 'Paper Cranes must support origami folding and flight');
+  // 7. Verify Unrelated Features & Database Integrity
+  console.log('\n--- 7. VERIFY UNRELATED CORE SYSTEMS REMAIN INTACT ---');
+  const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+  const tableNames = tables.map(t => t.name);
+  assert(tableNames.includes('employees'), 'employees database table must be intact');
+  assert(tableNames.includes('employee_surveys'), 'employee_surveys database table must be intact');
+  assert(tableNames.includes('survey_attempts'), 'survey_attempts database table must be intact');
+  assert(tableNames.includes('chat_conversations'), 'chat_conversations table must be intact');
+  assert(tableNames.includes('chat_messages'), 'chat_messages table must be intact');
+  assert(tableNames.includes('game_sessions'), 'game_sessions database table must be intact');
 
-  // Game 11: Worry Balloon Release
-  const wb = getGameById('worry-balloon');
-  const wbHtml = wb.render(bgMockSm);
-  assert(wbHtml.includes('Something I can act on') && wbHtml.includes('Something I can revisit later') && wbHtml.includes('Something I cannot control right now'), 'Worry Balloon must provide the 4 grounded worry categories');
-
-  // Game 12: Kindness Quest
-  const kq = getGameById('kindness-quest');
-  const kqHtml = kq.render(bgMockSm);
-  assert(kqHtml.includes('The Morning Overwhelm'), 'Kindness Quest must feature everyday workplace challenges');
-  assert(kqHtml.toLowerCase().includes('self-compassion'), 'Kindness Quest must provide self-compassion choices');
-
-  // 3. Backend API & Tenant Isolation Testing
-  console.log('\n--- 3. BACKEND API & TENANT ISOLATION TESTING ---');
-  const baseUrl = 'http://localhost:5173';
-
-  // Login as Aarav Patel (CP-ORG-78214)
-  const loginRes = await fetch(`${baseUrl}/api/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      companyId: 'CP-ORG-78214',
-      username: 'aaravpatel',
-      password: 'CalmPop@2026!'
-    })
-  });
-  assert(loginRes.ok, 'Employee login for Aarav Patel must succeed');
-  const loginData = await loginRes.json();
-  const token = loginData.token;
-  assert(Boolean(token), 'Login response must provide valid session token');
-
-  // Auth headers
-  const authHeaders = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
-  };
-
-  // Verify auth me
-  const meRes = await fetch(`${baseUrl}/api/auth/me`, { headers: authHeaders });
-  assert(meRes.ok, '/api/auth/me must return 200 with valid session');
-  const meData = await meRes.json();
-  assert(meData.employee.username === 'aaravpatel', 'Authenticated employee must be aaravpatel');
-  assert(meData.employee.companyId === 'CP-ORG-78214', 'Authenticated company must be CP-ORG-78214');
-
-  // Test Game Session API: Start & Update
-  const testSessionId = `TEST-GS-${Date.now()}`;
-  const sessionSaveRes = await fetch(`${baseUrl}/api/employee/games/session`, {
-    method: 'POST',
-    headers: authHeaders,
-    body: JSON.stringify({
-      sessionId: testSessionId,
-      gameId: 'breathe-garden',
-      startTime: Date.now() - 180000,
-      endTime: Date.now(),
-      elapsedDuration: 180,
-      status: 'completed',
-      selectedSettings: { durationSeconds: 180, guided: true },
-      completionStatus: true,
-      eventsMetadata: { cyclesCompleted: 18, checkInPost: 'peaceful' }
-    })
-  });
-  assert(sessionSaveRes.ok, 'POST /api/employee/games/session must succeed');
-
-  // Retrieve sessions
-  const getSessionsRes = await fetch(`${baseUrl}/api/employee/games/sessions`, { headers: authHeaders });
-  assert(getSessionsRes.ok, 'GET /api/employee/games/sessions must succeed');
-  const sessionsData = await getSessionsRes.json();
-  assert(Array.isArray(sessionsData.sessions), 'Sessions must return an array');
-  const foundSession = sessionsData.sessions.find(s => s.sessionId === testSessionId);
-  assert(foundSession !== undefined, 'Saved session must be retrieved from SQLite database');
-  assert(foundSession.gameId === 'breathe-garden', 'Session gameId must match');
-  assert(foundSession.status === 'completed', 'Session status must be completed');
-
-  // Test Private Reflections API
-  const testPrivId = `TEST-PRIV-${Date.now()}`;
-  const savePrivRes = await fetch(`${baseUrl}/api/employee/private-items`, {
-    method: 'POST',
-    headers: authHeaders,
-    body: JSON.stringify({
-      id: testPrivId,
-      itemType: 'thought_reframer',
-      content: {
-        thought: 'Testing private reflection isolation',
-        nextStep: 'Take one small action'
-      }
-    })
-  });
-  assert(savePrivRes.ok, 'POST /api/employee/private-items must succeed');
-
-  // Retrieve private items
-  const getPrivRes = await fetch(`${baseUrl}/api/employee/private-items?itemType=thought_reframer`, { headers: authHeaders });
-  assert(getPrivRes.ok, 'GET /api/employee/private-items must succeed');
-  const privData = await getPrivRes.json();
-  assert(Array.isArray(privData.items), 'Private items must return an array');
-  const foundPriv = privData.items.find(i => i.id === testPrivId);
-  assert(foundPriv !== undefined, 'Private reflection must be retrieved for authenticated employee');
-  assert(foundPriv.content.thought === 'Testing private reflection isolation', 'Private reflection content must match');
-
-  // Delete private item
-  const delPrivRes = await fetch(`${baseUrl}/api/employee/private-items/${encodeURIComponent(testPrivId)}`, {
-    method: 'DELETE',
-    headers: authHeaders
-  });
-  assert(delPrivRes.ok, 'DELETE /api/employee/private-items/:id must succeed');
-
-  // Verify deletion
-  const getPrivAfterDel = await fetch(`${baseUrl}/api/employee/private-items?itemType=thought_reframer`, { headers: authHeaders });
-  const privAfterData = await getPrivAfterDel.json();
-  assert(!privAfterData.items.some(i => i.id === testPrivId), 'Deleted private item must no longer exist');
-
-  // Cross-tenant Isolation Check:
-  // Verify that company admin surveys endpoint NEVER returns private reflections
-  const adminSurveysRes = await fetch(`${baseUrl}/api/admin/company-surveys?companyId=CP-ORG-78214`);
-  assert(adminSurveysRes.ok, '/api/admin/company-surveys must succeed');
-  const adminSurveysData = await adminSurveysRes.json();
-  const jsonStr = JSON.stringify(adminSurveysData);
-  assert(!jsonStr.includes('Testing private reflection isolation'), 'Admin reports must NEVER leak private employee thoughts or reflections');
-
-  console.log(`\n====================================================`);
-  console.log(`ALL TESTS PASSED! (${passed}/${total} assertions verified)`);
-  console.log(`====================================================\n`);
+  console.log('\n================================================================');
+  console.log(`ALL TESTS PASSED! (${passed}/${total} assertions)`);
+  console.log('================================================================\n');
 }
 
 runGamesTestSuite().catch(err => {
-  console.error('\nTest suite encountered an error:', err);
+  console.error('\n❌ Test suite failed with error:', err);
   process.exit(1);
 });

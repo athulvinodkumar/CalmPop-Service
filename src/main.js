@@ -114,6 +114,12 @@ window.navigateView = function(viewName, params = null) {
 };
 
 export function handleHashRoute() {
+  const pathname = window.location.pathname || '';
+  if (pathname.startsWith('/employee')) {
+    const subtab = pathname.replace('/employee/', '').replace('/employee', '') || 'home';
+    window.navigateView('employee', subtab);
+    return;
+  }
   const hash = window.location.hash || '#home';
   if (hash === '#login') {
     window.navigateView('login');

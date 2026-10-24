@@ -1,6 +1,7 @@
-// CalmPop - Games Library View
-// Displays the complete 12 stress-relief games catalog with category filtering, search,
-// milestone indicators, private reflections drawer, and interactive game runner.
+// CalmPop - Games Gallery View
+// Displays the four core interactive stress-relief activities:
+// 1. Zen Sand, 2. Calm Keys, 3. Star Catcher, 4. Mandala Bloom
+// with category & recommended mood filters, search, and dedicated game views.
 
 import { GAMES_CATALOG, getGameById } from '../catalog.js';
 import { GameSessionManager } from '../sessionManager.js';
@@ -8,33 +9,40 @@ import { GameShell } from '../gameShell.js';
 import { PrivateStorageManager } from '../privateStorage.js';
 
 let activeCategoryFilter = 'All';
+let activeMoodFilter = 'All';
 let activeSearchQuery = '';
 let activeRunningGameId = null;
 let currentController = null;
 
-export function renderGamesLibrary(containerId = 'games-page-root') {
+export function renderGamesLibrary(containerId = 'games-page-root', requestedGameId = null) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  // If a game is actively running, render its interactive shell
-  if (activeRunningGameId) {
-    const game = getGameById(activeRunningGameId);
+  // If a specific game was requested via route or active state
+  const targetGameId = requestedGameId || activeRunningGameId;
+  if (targetGameId) {
+    const game = getGameById(targetGameId);
     if (game) {
+      activeRunningGameId = targetGameId;
       launchGameView(game, container);
       return;
     }
   }
 
-  // Filter games
+  // Filter games based on Category, Mood, and Search
   const filtered = GAMES_CATALOG.filter(g => {
     const matchCat = activeCategoryFilter === 'All' || g.category === activeCategoryFilter;
+    const matchMood = activeMoodFilter === 'All' || (g.recommendedMoods && g.recommendedMoods.includes(activeMoodFilter));
     const matchSearch = !activeSearchQuery || 
       g.title.toLowerCase().includes(activeSearchQuery.toLowerCase()) || 
-      g.description.toLowerCase().includes(activeSearchQuery.toLowerCase());
-    return matchCat && matchSearch;
+      g.description.toLowerCase().includes(activeSearchQuery.toLowerCase()) ||
+      g.category.toLowerCase().includes(activeSearchQuery.toLowerCase()) ||
+      (g.recommendedMoods && g.recommendedMoods.some(m => m.toLowerCase().includes(activeSearchQuery.toLowerCase())));
+    return matchCat && matchMood && matchSearch;
   });
 
-  const categories = ['All', 'Breathing', 'Puzzles', 'Reflection', 'Creative', 'Grounding', 'Relaxation', 'Stories'];
+  const categories = ['All', 'Focus', 'Auditory', 'Creative'];
+  const moods = ['All', 'Tired', 'Overwhelmed', 'Anxious', 'Sad', 'Restless', 'Okay'];
 
   container.innerHTML = `
     <div class="space-y-6">
@@ -42,19 +50,19 @@ export function renderGamesLibrary(containerId = 'games-page-root') {
       <!-- HERO HEADER -->
       <div class="bg-gradient-to-r from-primary/10 via-cyan-500/10 to-lime-500/10 p-6 sm:p-8 rounded-3xl border border-surface-container/80 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div class="space-y-1.5 max-w-xl">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
             <span class="px-2.5 py-0.5 rounded-full bg-primary text-white text-[10px] font-bold tracking-wide uppercase shadow-xs">
               Moments of Calm
             </span>
-            <span class="px-2.5 py-0.5 rounded-full bg-tertiary-fixed/30 text-tertiary-container text-[10px] font-bold">
-              12 Fully Playable Activities
+            <span class="px-2.5 py-0.5 rounded-full bg-tertiary-fixed/40 text-tertiary-container text-[10px] font-bold">
+              4 Interactive Mindful Experiences
             </span>
           </div>
           <h1 class="font-headline-lg text-2xl sm:text-3xl font-bold text-on-surface">
             Mindful Resets & Games
           </h1>
           <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
-            Take a quiet pause between tasks. Short interactive activities designed to help you pause, recharge, and reset during demanding workdays.
+            Take a gentle pause during demanding workdays. Four interactive sensory experiences crafted for tactile focus, pure auditory calm, celestial release, and creative flow.
           </p>
         </div>
 
@@ -65,91 +73,137 @@ export function renderGamesLibrary(containerId = 'games-page-root') {
             class="px-4 py-2.5 rounded-full bg-surface-container-lowest hover:bg-surface-container border border-surface-container text-xs font-semibold text-primary shadow-xs transition-all flex items-center gap-1.5"
           >
             <span class="material-symbols-outlined text-[18px]">folder_special</span>
-            <span>My Private Reflections</span>
+            <span>My Saved Artwork</span>
           </button>
         </div>
       </div>
 
-      <!-- FILTER & SEARCH BAR -->
-      <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-surface-container-low/50 p-3 rounded-2xl border border-surface-container">
+      <!-- FILTER & SEARCH CONTROLS -->
+      <div class="space-y-3 bg-surface-container-low/50 p-4 rounded-3xl border border-surface-container">
         
-        <!-- Category Filter Pills -->
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          ${categories.map(cat => `
+        <!-- Category & Search Bar -->
+        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          
+          <!-- Category Filter Pills -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+            <span class="text-outline text-[11px] font-semibold uppercase tracking-wider mr-1 hidden sm:inline">Category:</span>
+            ${categories.map(cat => `
+              <button 
+                type="button" 
+                onclick="window.filterGamesCategory('${cat}')"
+                class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${activeCategoryFilter === cat ? 'bg-primary text-on-primary shadow-xs' : 'bg-surface-container-lowest text-on-surface-variant hover:text-on-surface hover:bg-surface-container border border-surface-container/60'}"
+              >
+                ${cat}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Search Input -->
+          <div class="relative min-w-[200px] sm:min-w-[240px]">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-outline">search</span>
+            <input 
+              type="text" 
+              id="games-search-input"
+              value="${activeSearchQuery}"
+              placeholder="Search by game or mood..."
+              oninput="window.handleGamesSearch(this.value)"
+              class="w-full pl-9 pr-3 py-1.5 rounded-full bg-surface-container-lowest border border-surface-container text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40"
+            />
+          </div>
+
+        </div>
+
+        <!-- Recommended Moods Filter Row -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 border-t border-surface-container/40">
+          <span class="text-outline text-[11px] font-semibold uppercase tracking-wider mr-1 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px] text-tertiary">mood</span>
+            <span>Recommended Mood:</span>
+          </span>
+          ${moods.map(mood => `
             <button 
               type="button" 
-              onclick="window.filterGamesCategory('${cat}')"
-              class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${activeCategoryFilter === cat ? 'bg-primary text-on-primary shadow-xs' : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'}"
+              onclick="window.filterGamesMood('${mood}')"
+              class="px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-all ${activeMoodFilter === mood ? 'bg-tertiary-fixed text-on-tertiary-fixed font-bold shadow-xs' : 'text-outline hover:text-on-surface hover:bg-surface-container-high'}"
             >
-              ${cat}
+              ${mood}
             </button>
           `).join('')}
         </div>
 
-        <!-- Search Input -->
-        <div class="relative min-w-[200px] sm:min-w-[240px]">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-outline">search</span>
-          <input 
-            type="text" 
-            id="games-search-input"
-            value="${activeSearchQuery}"
-            placeholder="Search activities..."
-            oninput="window.handleGamesSearch(this.value)"
-            class="w-full pl-9 pr-3 py-1.5 rounded-full bg-surface-container-lowest border border-surface-container text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/40"
-          />
-        </div>
-
       </div>
 
-      <!-- GAMES GRID (12 Interactive Cards) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- FOUR POLISHED GAME CARDS GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         ${filtered.map(game => `
-          <div class="group bg-surface-container-lowest rounded-3xl border border-surface-container hover:border-primary/40 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between overflow-hidden">
+          <div class="group bg-surface-container-lowest rounded-3xl border border-surface-container hover:border-primary/50 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
             
-            <!-- Card Header Illustration / Banner -->
-            <div class="h-36 bg-gradient-to-tr ${game.color} p-4 flex flex-col justify-between relative overflow-hidden">
-              <div class="flex items-center justify-between z-10">
-                <span class="px-2.5 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-[10px] font-bold text-on-surface shadow-xs">
-                  ${game.category}
+            <!-- Card Header: Custom Graphical SVG Preview Thumbnail -->
+            <div class="h-48 w-full relative overflow-hidden bg-slate-100 flex items-center justify-center border-b border-surface-container/60">
+              ${game.thumbnailSvg}
+
+              <!-- Floating Badges Overlay -->
+              <div class="absolute top-3 left-3 z-10 flex items-center gap-1.5">
+                <span class="px-2.5 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-[11px] font-bold text-on-surface shadow-xs flex items-center gap-1 border border-white/60">
+                  <span class="material-symbols-outlined text-[14px] text-primary">${game.icon}</span>
+                  <span>${game.category}</span>
                 </span>
-                <span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-md text-[10px] font-semibold text-outline">
+                <span class="px-2.5 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-[11px] font-semibold text-outline shadow-xs border border-white/60">
                   ${game.typicalDuration}
                 </span>
               </div>
 
-              <!-- Center Big Icon & Subtle Art -->
-              <div class="w-16 h-16 rounded-2xl bg-surface-container-lowest/80 backdrop-blur-md flex items-center justify-center shadow-xs mx-auto group-hover:scale-110 transition-transform duration-300">
-                <span class="material-symbols-outlined text-[36px]">${game.icon}</span>
-              </div>
-
-              <div class="flex items-center justify-between z-10 text-[10px] font-medium text-outline">
-                <span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/60">${game.badge}</span>
-                <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Ready to play</span>
+              <!-- Top Right Badge -->
+              <div class="absolute top-3 right-3 z-10">
+                <span class="px-2.5 py-1 rounded-full bg-primary/10 backdrop-blur-md text-primary font-bold text-[10px] tracking-wide uppercase border border-primary/20">
+                  ${game.badge}
+                </span>
               </div>
             </div>
 
             <!-- Card Body Content -->
-            <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
-              <div>
-                <h3 class="font-headline-sm text-base font-bold text-on-surface group-hover:text-primary transition-colors">
-                  ${game.title}
-                </h3>
-                <p class="text-xs text-on-surface-variant leading-relaxed mt-1 line-clamp-2">
+            <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+              <div class="space-y-2">
+                
+                <div class="flex items-center justify-between">
+                  <h2 class="font-headline-sm text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                    ${game.title}
+                  </h2>
+                </div>
+
+                <p class="text-xs text-on-surface-variant leading-relaxed">
                   ${game.description}
                 </p>
+
+                <!-- Recommended Moods Pills -->
+                <div class="pt-2 flex items-center gap-1.5 flex-wrap">
+                  <span class="text-[10px] text-outline uppercase font-semibold">Recommended for:</span>
+                  ${(game.recommendedMoods || []).map(m => `
+                    <span class="px-2 py-0.5 rounded-md bg-surface-container-low text-on-surface-variant text-[11px] font-medium border border-surface-container">
+                      ${m}
+                    </span>
+                  `).join('')}
+                </div>
+
+                <!-- Acoustic / Sound Signature note -->
+                <div class="pt-1 flex items-center gap-1.5 text-[11px] text-outline">
+                  <span class="material-symbols-outlined text-[14px] text-primary">graphic_eq</span>
+                  <span class="truncate">${game.soundDescription}</span>
+                </div>
+
               </div>
 
               <!-- Play Action Button -->
-              <div class="pt-2">
+              <div class="pt-3 border-t border-surface-container/60">
                 <button 
                   type="button" 
                   onclick="window.launchCalmGame('${game.id}')"
-                  class="w-full py-2.5 rounded-full bg-surface-container hover:bg-primary text-on-surface hover:text-on-primary text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
+                  class="w-full py-3 rounded-full bg-primary hover:bg-primary-container text-on-primary font-bold text-xs sm:text-sm transition-all shadow-sm hover:shadow flex items-center justify-center gap-2 group-hover:scale-[1.01]"
                 >
                   <span class="material-symbols-outlined text-[18px]">play_arrow</span>
-                  <span>Play Activity</span>
+                  <span>Play ${game.title}</span>
                 </button>
               </div>
+
             </div>
 
           </div>
@@ -157,22 +211,29 @@ export function renderGamesLibrary(containerId = 'games-page-root') {
       </div>
 
       ${filtered.length === 0 ? `
-        <div class="text-center py-12 bg-surface-container-low/40 rounded-3xl border border-surface-container space-y-2">
-          <span class="material-symbols-outlined text-[36px] text-outline">search_off</span>
-          <p class="font-bold text-sm text-on-surface">No activities match your search</p>
-          <p class="text-xs text-outline">Try selecting a different category or clearing your search query.</p>
+        <div class="text-center py-16 bg-surface-container-low/40 rounded-3xl border border-surface-container space-y-3">
+          <span class="material-symbols-outlined text-[40px] text-outline">search_off</span>
+          <p class="font-bold text-base text-on-surface">No activities match your filters</p>
+          <p class="text-xs text-outline max-w-sm mx-auto">Try resetting the category and mood filters to view all four mindful experiences.</p>
+          <button 
+            type="button" 
+            onclick="window.filterGamesCategory('All'); window.filterGamesMood('All');" 
+            class="px-5 py-2 rounded-full bg-primary text-on-primary text-xs font-bold"
+          >
+            Show All 4 Games
+          </button>
         </div>
       ` : ''}
 
     </div>
 
-    <!-- GLOBAL SAVED REFLECTIONS MODAL -->
+    <!-- SAVED ARTWORK & PRIVATE ITEMS MODAL -->
     <dialog id="global-reflections-modal" class="modal-dialog">
       <div class="modal-card max-w-lg w-full bg-surface-container-lowest p-6 rounded-3xl border border-surface-container shadow-2xl space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-surface-container">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-[22px]">folder_special</span>
-            <h3 class="font-headline-sm text-base font-bold text-on-surface">My Private Saved Reflections</h3>
+            <h3 class="font-headline-sm text-base font-bold text-on-surface">My Saved Artwork & Creations</h3>
           </div>
           <button type="button" onclick="document.getElementById('global-reflections-modal').close()" class="p-1 rounded-xl hover:bg-surface-container text-outline">
             <span class="material-symbols-outlined text-[20px]">close</span>
@@ -180,7 +241,7 @@ export function renderGamesLibrary(containerId = 'games-page-root') {
         </div>
 
         <p class="text-xs text-outline">
-          These personal items are private to your authenticated account and are never included in company analytics or reports.
+          Creations saved during your moments of calm are stored strictly private to your browser account and are never shared with employers or administrators.
         </p>
 
         <div id="global-reflections-list" class="max-h-80 overflow-y-auto space-y-2.5 pr-1 text-xs">
@@ -197,11 +258,18 @@ export function renderGamesLibrary(containerId = 'games-page-root') {
   `;
 }
 
-function launchGameView(game, container) {
-  // Clean up any old running controller
+export function launchGameView(game, container) {
+  // Clean up any previously running controller
   if (currentController && typeof currentController.destroy === 'function') {
     currentController.destroy();
     currentController = null;
+  }
+
+  activeRunningGameId = game.id;
+
+  // Sync window route hash
+  if (window.location.hash !== `#employee/games/${game.id}`) {
+    history.pushState(null, '', `#employee/games/${game.id}`);
   }
 
   const sessionManager = new GameSessionManager(game.id, {
@@ -224,20 +292,21 @@ function launchGameView(game, container) {
         currentController.destroy();
         currentController = null;
       }
+      history.pushState(null, '', '#employee/games');
       renderGamesLibrary('games-page-root');
     }
   });
 
-  // Render game inner HTML
+  // Render game inside shell
   const innerHtml = game.render(sessionManager, {});
   container.innerHTML = shell.renderShell(innerHtml);
 
-  // Hook listeners and instantiate controller
+  // Hook shell listeners and initialize game controller
   shell.attachListeners();
   currentController = game.createController(sessionManager, {});
   currentController.init();
 
-  // Start session
+  // Start mindful session
   sessionManager.start();
 }
 
@@ -248,17 +317,21 @@ if (typeof window !== 'undefined') {
     renderGamesLibrary('games-page-root');
   };
 
+  window.filterGamesMood = function(mood) {
+    activeMoodFilter = mood;
+    renderGamesLibrary('games-page-root');
+  };
+
   window.handleGamesSearch = function(query) {
     activeSearchQuery = query;
     renderGamesLibrary('games-page-root');
   };
 
   window.launchCalmGame = function(gameId) {
-    activeRunningGameId = gameId;
+    const game = getGameById(gameId);
     const container = document.getElementById('games-page-root');
-    if (container) {
-      const game = getGameById(gameId);
-      if (game) launchGameView(game, container);
+    if (game && container) {
+      launchGameView(game, container);
     }
   };
 
@@ -270,14 +343,14 @@ if (typeof window !== 'undefined') {
     list.innerHTML = `
       <div class="text-center py-6 text-outline">
         <span class="material-symbols-outlined animate-spin text-[24px]">progress_activity</span>
-        <p class="text-xs mt-1.5">Loading private reflections...</p>
+        <p class="text-xs mt-1.5">Loading saved items...</p>
       </div>
     `;
     modal.showModal();
 
     const items = await PrivateStorageManager.getPrivateItems();
     if (!items || items.length === 0) {
-      list.innerHTML = `<p class="text-outline text-center py-8">You have no saved private reflections yet.</p>`;
+      list.innerHTML = `<p class="text-outline text-center py-8">No saved artwork yet. Create and save a design in Mandala Bloom!</p>`;
       return;
     }
 
@@ -287,29 +360,10 @@ if (typeof window !== 'undefined') {
         month: 'short', day: 'numeric', year: 'numeric'
       });
 
-      let typeLabel = 'Reflection';
-      let summaryText = '';
-      if (item.itemType === 'thought_reframer') {
-        typeLabel = 'CBT Thought Reframe';
-        summaryText = `"${data.thought || 'Untitled'}"`;
-      } else if (item.itemType === 'weather_report') {
-        typeLabel = 'Weather Scene';
-        summaryText = `Elements: ${(data.elements || []).join(', ')}. ${data.privateNote ? `Note: "${data.privateNote}"` : ''}`;
-      } else if (item.itemType === 'paper_crane') {
-        typeLabel = 'Paper Crane Action';
-        summaryText = `"${data.action || 'Untitled action'}" (${data.category})`;
-      } else if (item.itemType === 'worry_balloon') {
-        typeLabel = 'Worry Balloon Release';
-        summaryText = `Category: ${data.category}. ${data.worryText ? `Worry: "${data.worryText}"` : ''}`;
-      } else if (item.itemType === 'inkstorm_art') {
-        typeLabel = 'Inkstorm Artwork';
-        summaryText = `Custom fluid painting (${data.strokes || 0} strokes)`;
-      }
-
       return `
         <div class="p-3.5 bg-surface-container-low rounded-2xl border border-surface-container/60 space-y-1.5">
           <div class="flex items-center justify-between text-[11px] text-outline">
-            <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">${typeLabel}</span>
+            <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">${item.itemType === 'mandala_art' ? 'Mandala Bloom Artwork' : 'Saved Creation'}</span>
             <div class="flex items-center gap-3">
               <span>${date}</span>
               <button 
@@ -323,16 +377,16 @@ if (typeof window !== 'undefined') {
               </button>
             </div>
           </div>
-          <p class="font-medium text-on-surface text-xs leading-relaxed">${summaryText}</p>
+          <p class="font-medium text-on-surface text-xs leading-relaxed">${data.title || 'Saved Artwork'}</p>
         </div>
       `;
     }).join('');
   };
 
   window.deleteGlobalReflectionItem = async function(id, itemType) {
-    if (confirm('Permanently delete this private reflection?')) {
+    if (confirm('Permanently delete this saved creation?')) {
       await PrivateStorageManager.deletePrivateItem(id, itemType);
-      window.showToast?.('Reflection deleted permanently.', 'delete');
+      window.showToast?.('Artwork deleted permanently.', 'delete');
       window.openGlobalPrivateReflectionsModal();
     }
   };

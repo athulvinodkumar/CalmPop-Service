@@ -174,7 +174,6 @@ class AudioSynth {
     try {
       this.init();
       if (!this.ctx) return;
-      // White noise burst for paper folding
       const bufferSize = this.ctx.sampleRate * 0.12;
       const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -197,6 +196,199 @@ class AudioSynth {
       gain.connect(this.ctx.destination);
 
       noise.start();
+    } catch {}
+  }
+
+  // --- 1. ZEN SAND: Whispering Sand Friction & Ocean Wave ---
+  playSandRakeFriction(speed = 1.0) {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const duration = 0.08 + Math.min(speed * 0.04, 0.12);
+      const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * 0.7;
+      }
+
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      // Filtered to low-mid whispering grit
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 750 + Math.random() * 200;
+      filter.Q.value = 1.8;
+
+      const gain = this.ctx.createGain();
+      const now = this.ctx.currentTime;
+      const vol = Math.min(0.035 * Math.max(0.4, speed), 0.06);
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(vol, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      noise.start(now);
+    } catch {}
+  }
+
+  playOceanWaveSmoothing() {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const duration = 2.8;
+      const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1);
+      }
+
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      const now = this.ctx.currentTime;
+      filter.frequency.setValueAtTime(250, now);
+      filter.frequency.linearRampToValueAtTime(700, now + 1.2);
+      filter.frequency.exponentialRampToValueAtTime(150, now + duration);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.06, now + 1.1);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      noise.start(now);
+      noise.stop(now + duration);
+    } catch {}
+  }
+
+  // --- 2. CALM KEYS: Pure Bell Overtones & Harmonic Shimmer ---
+  playCalmBell(freq = 261.63, duration = 2.5, shimmer = true, customVol = 0.08) {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+
+      // Partials for rich acoustic metallic chime
+      const partials = [
+        { mult: 1.0, gain: 1.0, decay: duration },          // Fundamental
+        { mult: 2.0, gain: 0.45, decay: duration * 0.75 },   // Octave
+        { mult: 3.01, gain: 0.22, decay: duration * 0.5 },   // 12th
+        { mult: 4.07, gain: 0.12, decay: duration * 0.35 },  // Metallic ring
+        { mult: 5.4, gain: 0.06, decay: duration * 0.2 }     // Shimmer
+      ];
+
+      const masterGain = this.ctx.createGain();
+      masterGain.gain.setValueAtTime(customVol, now);
+      masterGain.connect(this.ctx.destination);
+
+      partials.forEach(p => {
+        const osc = this.ctx.createOscillator();
+        const pGain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq * p.mult, now);
+
+        // Instant attack, long exponential decay
+        pGain.gain.setValueAtTime(0.0001, now);
+        pGain.gain.linearRampToValueAtTime(p.gain, now + 0.015);
+        pGain.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);
+
+        osc.connect(pGain);
+        pGain.connect(masterGain);
+
+        osc.start(now);
+        osc.stop(now + p.decay);
+      });
+
+      // Subtle vibrato / shimmer overtone if requested
+      if (shimmer) {
+        const subOsc = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        subOsc.type = 'triangle';
+        subOsc.frequency.setValueAtTime(freq * 0.5, now);
+        subGain.gain.setValueAtTime(0.0001, now);
+        subGain.gain.linearRampToValueAtTime(0.15, now + 0.05);
+        subGain.gain.exponentialRampToValueAtTime(0.0001, now + duration * 0.6);
+        subOsc.connect(subGain);
+        subGain.connect(masterGain);
+        subOsc.start(now);
+        subOsc.stop(now + duration * 0.6);
+      }
+    } catch {}
+  }
+
+  // --- 3. STAR CATCHER: Celestial Chime Sparkle Bursts ---
+  playStarSparkle(baseFreq = 880) {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      // 3-note crystalline arpeggio sparkle
+      const notes = [baseFreq, baseFreq * 1.25, baseFreq * 1.5, baseFreq * 2.0];
+      notes.forEach((freq, idx) => {
+        const t = now + idx * 0.045;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, t);
+
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.linearRampToValueAtTime(0.035, t + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.85);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(t);
+        osc.stop(t + 0.85);
+      });
+    } catch {}
+  }
+
+  // --- 4. MANDALA BLOOM: Harmonic Pentatonic Bell Tone ---
+  playMandalaHarmonic(freq = 440, pan = 0) {
+    if (this.isMuted) return;
+    try {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.045, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+
+      // Stereo panning if supported
+      if (this.ctx.createStereoPanner) {
+        const panner = this.ctx.createStereoPanner();
+        panner.pan.setValueAtTime(Math.max(-1, Math.min(1, pan)), now);
+        osc.connect(gain);
+        gain.connect(panner);
+        panner.connect(this.ctx.destination);
+      } else {
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+      }
+
+      osc.start(now);
+      osc.stop(now + 1.2);
     } catch {}
   }
 }
