@@ -29,29 +29,13 @@ export const GAMES_CATALOG = [
     route: '/employee/games/zen-sand',
     hashRoute: '#employee/games/zen-sand',
     thumbnailSvg: `
-      <svg viewBox="0 0 200 120" class="w-full h-full object-cover">
+      <svg viewBox="0 0 200 120" class="w-full h-full object-cover" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="sandBg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#EADAB5"/>
-            <stop offset="100%" stop-color="#D6BF93"/>
-          </linearGradient>
-          <filter id="sandShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#554025" flood-opacity="0.3"/>
-          </filter>
+          <clipPath id="zenSandClip">
+            <rect width="200" height="120" rx="0"/>
+          </clipPath>
         </defs>
-        <!-- Sand Bed -->
-        <rect width="200" height="120" fill="url(#sandBg)" rx="16"/>
-        <!-- Rake Grooves -->
-        <path d="M 20,40 Q 70,25 110,45 T 180,35" stroke="#7A5E38" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
-        <path d="M 20,54 Q 70,39 110,59 T 180,49" stroke="#7A5E38" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
-        <path d="M 20,68 Q 70,53 110,73 T 180,63" stroke="#7A5E38" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
-        <!-- Circular Sand Ripple -->
-        <circle cx="145" cy="80" r="22" stroke="#7A5E38" stroke-width="2.5" fill="none" opacity="0.5"/>
-        <circle cx="145" cy="80" r="14" stroke="#7A5E38" stroke-width="2.5" fill="none" opacity="0.4"/>
-        <!-- Zen River Stones -->
-        <ellipse cx="145" cy="80" rx="9" ry="7" fill="#3D4148" filter="url(#sandShadow)"/>
-        <ellipse cx="50" cy="85" rx="14" ry="10" fill="#4B5244" filter="url(#sandShadow)"/>
-        <ellipse cx="58" cy="78" rx="8" ry="6" fill="#665D50" filter="url(#sandShadow)"/>
+        <image href="/images/zen-sand-thumbnail.jpg" x="0" y="0" width="200" height="120" preserveAspectRatio="xMidYMid slice" clip-path="url(#zenSandClip)"/>
       </svg>
     `,
     render: (sm, opts) => renderZenSand(sm, opts),
