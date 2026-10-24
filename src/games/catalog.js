@@ -9,6 +9,7 @@ import { renderZenSand, ZenSandController } from './implementations/zenSand.js';
 import { renderCalmKeys, CalmKeysController } from './implementations/calmKeys.js';
 import { renderStarCatcher, StarCatcherController } from './implementations/starCatcher.js';
 import { renderMandalaBloom, MandalaBloomController } from './implementations/mandalaBloom.js';
+import { renderCalmSoundscapes, CalmSoundscapesController } from './implementations/calmSoundscapes.js';
 
 export const GAMES_CATALOG = [
   {
@@ -213,9 +214,65 @@ export const GAMES_CATALOG = [
     `,
     render: (sm, opts) => renderMandalaBloom(sm, opts),
     createController: (sm, opts) => new MandalaBloomController(sm, opts)
+  },
+  {
+    id: 'calmSoundscapes',
+    title: 'Calm Soundscapes',
+    category: 'Auditory',
+    recommendedMoods: ['Anxious', 'Overwhelmed', 'Tired'],
+    typicalDuration: '15-60 min',
+    defaultDuration: 1800,
+    durationOptions: [900, 1800, 3600],
+    description: 'switch between ocean waves, rain, forest, night and campfire sounds with a wave background that moves with the audio',
+    instructions: 'Choose between 5 procedural sound scenes (Ocean Waves, Gentle Rain, Whispering Forest, Summer Night, Cozy Campfire). Switch smoothly with keys 1–5 or buttons, adjust volume, and set an optional sleep timer.',
+    soundDescription: 'Procedural noise textures, sweeping resonance filters, gentle crickets, birdsong & campfire crackle',
+    badge: 'Generative Audio',
+    icon: 'headphones',
+    color: 'from-cyan-500/15 via-teal-400/10 to-primary/15 text-primary',
+    route: '/employee/games/calmSoundscapes',
+    hashRoute: '#employee/games/calmSoundscapes',
+    thumbnailSvg: `
+      <svg viewBox="0 0 200 120" class="w-full h-full object-cover">
+        <defs>
+          <linearGradient id="soundscapeBg" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#082F49"/>
+            <stop offset="100%" stop-color="#041E2F"/>
+          </linearGradient>
+          <radialGradient id="soundOrb" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#06B6D4" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#041E2F" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="200" height="120" fill="url(#soundscapeBg)" rx="16"/>
+        <!-- Central Pulsing Glow -->
+        <circle cx="100" cy="52" r="36" fill="url(#soundOrb)"/>
+        <circle cx="100" cy="52" r="14" fill="#38BDF8" opacity="0.9"/>
+        <!-- Undulating Sound Wave Layers -->
+        <path d="M 0 78 Q 50 64 100 78 T 200 78 L 200 120 L 0 120 Z" fill="#0D9488" opacity="0.35"/>
+        <path d="M 0 88 Q 50 74 100 88 T 200 88 L 200 120 L 0 120 Z" fill="#06B6D4" opacity="0.45"/>
+        <path d="M 0 98 Q 50 86 100 98 T 200 98 L 200 120 L 0 120 Z" fill="#38BDF8" opacity="0.3"/>
+        <!-- Mirrored Spectrum Bars -->
+        <rect x="82" y="44" width="3" height="16" rx="1.5" fill="#38BDF8" opacity="0.7"/>
+        <rect x="88" y="38" width="3" height="28" rx="1.5" fill="#C9F246" opacity="0.8"/>
+        <rect x="94" y="32" width="3" height="40" rx="1.5" fill="#FFFFFF" opacity="0.9"/>
+        <rect x="103" y="32" width="3" height="40" rx="1.5" fill="#FFFFFF" opacity="0.9"/>
+        <rect x="109" y="38" width="3" height="28" rx="1.5" fill="#C9F246" opacity="0.8"/>
+        <rect x="115" y="44" width="3" height="16" rx="1.5" fill="#38BDF8" opacity="0.7"/>
+      </svg>
+    `,
+    render: (sm, opts) => renderCalmSoundscapes(sm, opts),
+    createController: (sm, opts) => new CalmSoundscapesController(sm, opts)
   }
 ];
 
 export function getGameById(id) {
-  return GAMES_CATALOG.find(g => g.id === id) || null;
+  if (!id) return null;
+  return GAMES_CATALOG.find(g => 
+    g.id === id || 
+    g.id === id.replace(/-/g, '') ||
+    g.id.toLowerCase() === id.toLowerCase() ||
+    g.id.toLowerCase() === id.replace(/-/g, '').toLowerCase() ||
+    (g.route && g.route.endsWith('/' + id))
+  ) || null;
 }

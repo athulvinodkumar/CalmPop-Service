@@ -55,14 +55,14 @@ export function renderGamesLibrary(containerId = 'games-page-root', requestedGam
               Moments of Calm
             </span>
             <span class="px-2.5 py-0.5 rounded-full bg-tertiary-fixed/40 text-tertiary-container text-[10px] font-bold">
-              4 Interactive Mindful Experiences
+              5 Interactive Mindful Experiences
             </span>
           </div>
           <h1 class="font-headline-lg text-2xl sm:text-3xl font-bold text-on-surface">
             Mindful Resets & Games
           </h1>
           <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
-            Take a gentle pause during demanding workdays. Four interactive sensory experiences crafted for tactile focus, pure auditory calm, celestial release, and creative flow.
+            Take a gentle pause during demanding workdays. Five interactive sensory experiences crafted for tactile focus, pure auditory calm, celestial release, generative soundscapes, and creative flow.
           </p>
         </div>
 

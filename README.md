@@ -1,13 +1,13 @@
 # CalmPop V2 — Workplace Wellbeing & Interactive Calm Platform
 
-A proactive, privacy-first workplace wellbeing application designed for employees and teams. CalmPop integrates intelligent pulse surveys, privacy-preserving tenant analytics, an AI-powered Wellbeing Companion, and four mindful interactive stress-relief activities with real-time procedural audio synthesis.
+A proactive, privacy-first workplace wellbeing application designed for employees and teams. CalmPop integrates intelligent pulse surveys, privacy-preserving tenant analytics, an AI-powered Wellbeing Companion, and five mindful interactive stress-relief activities with real-time procedural audio synthesis.
 
 ---
 
 ## 🌟 Key Features
 
 ### 1. Interactive Mindful Activities
-Four tactile, non-competitive stress-relief experiences designed to restore focus and emotional equilibrium:
+Five tactile, non-competitive stress-relief experiences designed to restore focus and emotional equilibrium:
 
 - **Zen Sand (Focus • Tired, Overwhelmed):**
   - Interactive sand garden with realistic 3-tine rake grooves and cast shadows.
@@ -27,6 +27,10 @@ Four tactile, non-competitive stress-relief experiences designed to restore focu
   - Shifting pastels mode cycling across vibrant pastel hues (`hsl(hue, 85%, 68%)`).
   - Pentatonic harmonic chime playback mapped to radius and stroke angle.
   - High-DPI antialiasing, brush size slider, live stroke hue badge, undo/redo history, and PNG artwork export.
+- **Calm Soundscapes (Auditory • Anxious, Overwhelmed, Tired):**
+  - 5 procedural ambient sound scenes (Ocean Waves, Gentle Rain, Whispering Forest, Summer Night, Cozy Campfire) synthesized in real-time with Web Audio API noise buffers, biquad filters, and oscillators (zero external audio files).
+  - Real-time `AnalyserNode`-driven canvas visualizer featuring layered undulating waves, mirrored spectrum bars, and a pulsing central orb with dynamic per-scene color palettes.
+  - Smooth 1.5-second crossfades when switching scenes, keyboard shortcuts (`1–5`, Space, M), Play/Pause, volume slider, mute toggle, and gentle sleep timer presets (15, 30, 60 min).
 
 ### 2. AI Wellbeing Companion
 - Conversational support for workplace stress, burnout, difficult situations, and workload balance.
@@ -112,7 +116,7 @@ CalmPop includes dedicated test suites for the core systems:
   ```bash
   node scratch/test-games-system.js
   ```
-  *(Verifies the 4-game catalog, game mechanics, obsolete file removals, and database table integrity - 89 assertions).*
+  *(Verifies the 5-game catalog, game mechanics, obsolete file removals, controller lifecycles, and database table integrity - 122 assertions).*
 
 - **Survey Flow Regression Test:**
   ```bash
@@ -141,7 +145,7 @@ CalmPop-V2/
 │   └── seed.js                 # Sample organizations & credentials seed
 ├── src/
 │   ├── games/                  # Interactive stress-relief games subsystem
-│   │   ├── implementations/    # Game controllers (zenSand, calmKeys, starCatcher, mandalaBloom)
+│   │   ├── implementations/    # Game controllers (zenSand, calmKeys, starCatcher, mandalaBloom, calmSoundscapes)
 │   │   ├── views/              # Games gallery and session UI views
 │   │   ├── audioSynth.js       # Real-time Web Audio API procedural sound engine
 │   │   ├── catalog.js          # Metadata, recommended moods, and route definitions
