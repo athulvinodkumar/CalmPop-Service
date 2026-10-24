@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="web_standard" name="shell-type"/>
+  <title>CalmPop — Building Healthier Workdays with Proactive Calm</title>
+  <meta name="description" content="CalmPop replaces survey fatigue with proactive 3-minute weekly check-ins, anonymized team sentiment analytics, and integrated moments of calm."/>
+
+  <!-- Google Fonts: Geist & Inter & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="./src/style.css"/>
+
+  <!-- Tailwind CDN & Config matching CalmPop design system -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      "darkMode": "class",
+      "theme": {
+        "extend": {
+          "colors": {
+            "on-background": "#1c1b1b",
+            "on-primary": "#ffffff",
+            "surface-container-high": "#eae7e7",
+            "secondary-fixed": "#bfe9ff",
+            "inverse-on-surface": "#f3f0ef",
+            "secondary-container": "#3ac9fe",
+            "on-primary-fixed": "#001e30",
+            "on-secondary-fixed": "#001f2a",
+            "on-tertiary": "#ffffff",
+            "surface-dim": "#dcd9d9",
+            "on-tertiary-fixed": "#161e00",
+            "on-surface-variant": "#3f4850",
+            "on-surface": "#1c1b1b",
+            "on-secondary": "#ffffff",
+            "surface-container-low": "#f6f3f2",
+            "surface-bright": "#fcf9f8",
+            "surface-container": "#f0edec",
+            "on-tertiary-container": "#fbffe4",
+            "error-container": "#ffdad6",
+            "primary": "#006191",
+            "tertiary-fixed": "#c9f246",
+            "surface-variant": "#e5e2e1",
+            "surface": "#fcf9f8",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#8fcdff",
+            "on-error": "#ffffff",
+            "surface-container-highest": "#e5e2e1",
+            "outline-variant": "#bfc7d1",
+            "outline": "#707881",
+            "tertiary-container": "#647e00",
+            "secondary": "#006685",
+            "tertiary": "#4e6400",
+            "primary-container": "#007bb6",
+            "background": "#fcf9f8",
+            "on-secondary-container": "#00526b",
+            "on-tertiary-fixed-variant": "#3c4d00",
+            "on-secondary-fixed-variant": "#004d65",
+            "secondary-fixed-dim": "#6cd2ff",
+            "on-primary-fixed-variant": "#004b71",
+            "error": "#ba1a1a",
+            "inverse-surface": "#313030",
+            "on-primary-container": "#fcfcff",
+            "primary-fixed": "#cbe6ff",
+            "surface-tint": "#006494",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-fixed-dim": "#add528",
+            "inverse-primary": "#8fcdff"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-lg": "4rem",
+            "gutter-sm": "1rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2.5rem",
+            "margin-sm": "1.25rem",
+            "margin": "2rem",
+            "gutter-lg": "2rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "display-mobile": ["Geist", "sans-serif"],
+            "headline-md": ["Geist", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "headline-sm": ["Geist", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "label-sm": ["Inter", "sans-serif"],
+            "headline-lg-mobile": ["Geist", "sans-serif"],
+            "headline-lg": ["Geist", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "display": ["Geist", "sans-serif"],
+            "label-lg": ["Inter", "sans-serif"]
+          },
+          "fontSize": {
+            "display-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "500" }],
+            "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "500" }],
+            "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "display": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-background font-body-md text-on-surface antialiased selection:bg-tertiary-fixed selection:text-on-tertiary-fixed relative">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- HEADER NAVIGATION -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-surface/85 backdrop-blur-xl border-b border-surface-container/60 shadow-[0_1px_8px_rgba(0,0,0,0.03)] transition-all">
+    <div class="h-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="#home" class="flex items-center gap-3 group flex-shrink-0">
+        <img alt="CalmPop Brand Logo" class="h-8 w-auto object-contain transition-transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1WGEh00kXjxC-nRTncmjpGib0cLyCbt9ALqLbrBhfdig6r5L9wi5sgO3MFI_wd_iXaIRyJFIkstCjbWXKwffm7ECqDcLAgv5Kcx0KpXhprJ8ki9DKEbQHcSDfDUDG0RctReHBwPpK-6UbUizp5IS9wtVcYr8HNxHH54u-v3orL0pZ037sUoCqRDo4S_OsT7sylMzGbyHL6ETa-ofrjs0QX37bw6xNCP8HNV9iAL4K1meefYhcZo474dido-"/>
+        <span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-semibold">CalmPop</span>
+      </a>
+
+      <!-- Desktop Navigation Menu (Matching CalmPop original 5 items) -->
+      <nav class="hidden lg:flex items-center gap-1 bg-surface-container-lowest/90 px-2 py-1.5 rounded-full border border-surface-container-high/80 shadow-[0_1px_8px_rgba(0,0,0,0.04)]" id="desktop-nav">
+        <a class="nav-item transition-all bg-surface-container-high text-on-surface font-label-lg rounded-full px-4 py-2 font-medium" data-path="home" href="#home">Home</a>
+        <a class="nav-item font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high px-4 py-2 rounded-full transition-all font-medium" data-path="how-it-works" href="#how-it-works">How It Works</a>
+        <a class="nav-item font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high px-4 py-2 rounded-full transition-all font-medium" data-path="for-companies" href="#for-companies">For Companies</a>
+        <a class="nav-item font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high px-4 py-2 rounded-full transition-all font-medium" data-path="features" href="#features">Features</a>
+        <a class="nav-item font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high px-4 py-2 rounded-full transition-all font-medium" data-path="pricing" href="#pricing">Pricing</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <button onclick="window.navigateView('login')" class="hidden sm:inline-flex font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors px-3 py-2 rounded-full hover:bg-surface-container-high">
+          Employee Sign In
+        </button>
+
+        <button onclick="window.openRegistrationModal('growth')" class="font-label-lg text-label-lg bg-tertiary-fixed text-on-tertiary-fixed px-4 sm:px-6 py-2 sm:py-2.5 rounded-full transition-all hover:bg-tertiary-fixed-dim hover:text-on-tertiary-fixed shadow-sm hover:shadow font-semibold">
+          Get Started
+        </button>
+
+        <!-- User Profile Avatar Demo Switcher -->
+        <button onclick="openModal('login-modal')" title="Switch User Role / Profile" class="w-8 h-8 rounded-full bg-primary flex items-center justify-center hover:ring-2 hover:ring-primary/40 transition-all flex-shrink-0" aria-label="Account profile">
+          <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+        </button>
+
+        <!-- Mobile Menu Toggle Button (visible on mobile / tablet) -->
+        <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-on-surface rounded-xl hover:bg-surface-container-high transition-colors flex items-center justify-center" aria-label="Toggle Navigation" id="mobile-nav-toggle">
+          <span class="material-symbols-outlined text-[24px]" id="mobile-nav-icon">menu</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-drawer" class="hidden lg:hidden bg-surface-container-lowest/98 backdrop-blur-2xl border-b border-surface-container px-6 py-5 shadow-2xl transition-all">
+      <div class="flex flex-col gap-1.5">
+        <a class="mobile-nav-item px-4 py-2.5 rounded-xl font-label-lg text-on-surface hover:bg-surface-container-high transition-colors font-medium flex items-center justify-between" data-path="home" href="#home">
+          <span>Home</span>
+          <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+        </a>
+        <a class="mobile-nav-item px-4 py-2.5 rounded-xl font-label-lg text-on-surface hover:bg-surface-container-high transition-colors font-medium flex items-center justify-between" data-path="how-it-works" href="#how-it-works">
+          <span>How It Works</span>
+          <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+        </a>
+        <a class="mobile-nav-item px-4 py-2.5 rounded-xl font-label-lg text-on-surface hover:bg-surface-container-high transition-colors font-medium flex items-center justify-between" data-path="for-companies" href="#for-companies">
+          <span>For Companies</span>
+          <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+        </a>
+        <a class="mobile-nav-item px-4 py-2.5 rounded-xl font-label-lg text-on-surface hover:bg-surface-container-high transition-colors font-medium flex items-center justify-between" data-path="features" href="#features">
+          <span>Features</span>
+          <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+        </a>
+        <a class="mobile-nav-item px-4 py-2.5 rounded-xl font-label-lg text-on-surface hover:bg-surface-container-high transition-colors font-medium flex items-center justify-between" data-path="pricing" href="#pricing">
+          <span>Pricing</span>
+          <span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+        </a>
+
+        <div class="pt-4 mt-2 border-t border-surface-container flex flex-col gap-2.5">
+          <button onclick="toggleMobileMenu(true); window.navigateView('login');" class="w-full text-center py-2.5 rounded-xl bg-surface-container-high text-on-surface font-semibold text-sm hover:bg-surface-container-highest transition-colors">
+            Employee Sign In
+          </button>
+          <button onclick="toggleMobileMenu(true); startSurveyDemo();" class="w-full text-center py-2.5 rounded-xl bg-secondary-fixed text-on-secondary-fixed font-semibold text-sm hover:bg-secondary-fixed-dim transition-colors flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">play_arrow</span>
+            <span>Take 30-Sec Demo Survey</span>
+          </button>
+          <button onclick="toggleMobileMenu(true); startCalmSession();" class="w-full text-center py-2.5 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed font-semibold text-sm hover:bg-tertiary-fixed-dim transition-colors flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">spa</span>
+            <span>Launch Moments of Calm</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- LANDING PAGE VIEW -->
+  <div id="landing-view">
+    <!-- MAIN WRAPPER -->
+    <main class="w-full pt-20 bg-background min-h-screen">
+      <div class="flex flex-col w-full">
+
+        <!-- 1. HERO SECTION (Azure-sky curved stage and 3D floating interactive cards) -->
+        <section id="home" class="w-full px-4 sm:px-6 lg:px-12 pt-4 pb-16">
+          <div class="max-w-7xl mx-auto relative rounded-3xl overflow-hidden bg-gradient-to-b from-[#18B9ED] via-primary-container to-primary shadow-2xl px-6 sm:px-10 lg:px-16 pt-16 pb-24 text-center">
+            
+            <!-- Ambient Cloud / Glow Decor -->
+            <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/20 blur-3xl pointer-events-none"></div>
+            <div class="absolute top-1/2 -right-32 w-[32rem] h-[32rem] rounded-full bg-secondary-fixed/20 blur-3xl pointer-events-none"></div>
+
+            <!-- Live Status Pill -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-on-primary mb-8 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-tertiary-fixed animate-pulse"></span>
+              <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-primary font-semibold">New: Intelligent Weekly Micro-Cadence 2.0</span>
+            </div>
+
+            <!-- Main Headline -->
+            <h1 class="font-display text-display text-on-primary max-w-4xl mx-auto mb-6 tracking-tight leading-tight">
+              Building healthier workdays with proactive calm.
+            </h1>
+
+            <!-- Subheadline -->
+            <p class="font-body-lg text-body-lg text-on-primary/90 max-w-2xl mx-auto mb-10">
+              Help your organization understand stress signals, prevent cognitive burnout, and discover active micro-relief through dynamic 3-minute weekly check-ins.
+            </p>
+
+            <!-- Primary Action CTAs -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
+              <button onclick="window.openRegistrationModal('growth')" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-tertiary-fixed text-on-tertiary-fixed hover:bg-tertiary-fixed-dim px-8 py-3.5 rounded-full font-label-lg text-label-lg font-bold shadow-lg hover:shadow-xl transition-all">
+                <span>Get Started Free</span>
+                <span class="w-6 h-6 rounded-full bg-on-tertiary-fixed flex items-center justify-center text-tertiary-fixed">
+                  <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                </span>
+              </button>
+
+            <button onclick="startSurveyDemo()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-on-primary border border-white/30 backdrop-blur-md px-8 py-3.5 rounded-full font-label-lg text-label-lg transition-all">
+              <span class="material-symbols-outlined text-[18px]">play_circle</span>
+              <span>Launch 30-Sec Check-in Demo</span>
+            </button>
+          </div>
+
+          <!-- Social Proof Badge -->
+          <div class="inline-flex items-center gap-2 text-on-primary/95 text-body-sm font-body-sm bg-black/10 backdrop-blur-sm px-4 py-1.5 rounded-full mb-16">
+            <div class="flex text-[#FFD700]">
+              <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+            </div>
+            <span class="font-medium">Rated 4.9/5 by 4,900+ forward-thinking teams</span>
+          </div>
+
+          <!-- 3D Curved Mockup Horizon Cards (Interactive) -->
+          <div class="relative w-full overflow-x-auto lg:overflow-visible pb-4 pt-2 -mb-10 no-scrollbar">
+            <div class="min-w-[1080px] flex items-center justify-center gap-4 py-4 px-2">
+              
+              <!-- Card 1: Question 14 / Micro-Checkin (Interactive Trigger) -->
+              <div onclick="startSurveyDemo()" class="w-56 bg-surface-container-lowest/95 backdrop-blur-md rounded-2xl p-4 shadow-xl text-left transform -rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-300 cursor-pointer border border-white/40 group">
+                <div class="flex items-center justify-between text-outline mb-2">
+                  <span class="font-label-sm text-label-sm uppercase tracking-wide group-hover:text-primary transition-colors">Question 14 of 30</span>
+                  <span class="material-symbols-outlined text-[16px] text-primary">psychology</span>
+                </div>
+                <p class="font-headline-sm text-[14px] leading-tight text-on-surface mb-3 font-semibold">How manageable was your workload velocity this week?</p>
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between p-1.5 bg-surface-container-low rounded-lg text-body-sm text-[12px] text-on-surface-variant group-hover:bg-primary-fixed/20 transition-colors">
+                    <span>Balanced</span>
+                    <span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+                  </div>
+                  <div class="flex items-center justify-between p-1.5 bg-primary/10 rounded-lg text-body-sm text-[12px] text-primary font-medium">
+                    <span>High, but stable</span>
+                    <span class="material-symbols-outlined text-[14px]">check</span>
+                  </div>
+                  <div class="flex items-center justify-between p-1.5 bg-surface-container-low rounded-lg text-body-sm text-[12px] text-on-surface-variant">
+                    <span>Overwhelming</span>
+                    <span class="w-2 h-2 rounded-full bg-error"></span>
+                  </div>
+                </div>
+                <div class="mt-2 text-center text-[10px] text-primary font-semibold">Click to try interactive survey &rarr;</div>
+              </div>
+
+              <!-- Card 2: Stress Level Indicator -->
+              <div class="w-60 bg-surface-container-lowest rounded-2xl p-5 shadow-2xl text-left transform -rotate-1 hover:rotate-0 hover:scale-105 transition-all duration-300 border border-white/40">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-label-md text-label-md text-on-surface-variant">Team Stress Index</span>
+                  <span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-[11px] font-bold">Optimal</span>
+                </div>
+                <div class="flex items-baseline gap-2 mb-2">
+                  <span class="font-headline-lg text-[32px] text-on-surface font-semibold">28%</span>
+                  <span class="text-tertiary font-body-sm text-body-sm flex items-center font-medium">
+                    <span class="material-symbols-outlined text-[16px]">arrow_downward</span> -6.4%
+                  </span>
+                </div>
+                <!-- SVG Progress Ring Bar -->
+                <div class="w-full bg-surface-container h-2 rounded-full overflow-hidden mb-2">
+                  <div class="bg-tertiary-fixed-dim h-full rounded-full transition-all duration-1000" style="width: 28%"></div>
+                </div>
+                <p class="font-label-sm text-label-sm text-outline">Reflects 142 anonymous responses</p>
+              </div>
+
+              <!-- Card 3: Center Featured Pulse Trend -->
+              <div class="w-64 bg-surface-container-lowest rounded-2xl p-5 shadow-2xl text-left border-2 border-white transform scale-105 z-10 hover:scale-110 transition-transform duration-300">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[20px]">insights</span>
+                  </div>
+                  <div>
+                    <h4 class="font-headline-sm text-[14px] text-on-surface font-semibold leading-tight">Participation Pulse</h4>
+                    <p class="font-label-sm text-label-sm text-on-surface-variant">Active 7-day rolling</p>
+                  </div>
+                </div>
+                <div class="h-16 w-full flex items-end gap-1.5 mb-2 pt-2">
+                  <div class="flex-1 bg-surface-container h-[45%] rounded-t hover:h-[65%] transition-all"></div>
+                  <div class="flex-1 bg-surface-container h-[60%] rounded-t hover:h-[75%] transition-all"></div>
+                  <div class="flex-1 bg-surface-container h-[70%] rounded-t hover:h-[80%] transition-all"></div>
+                  <div class="flex-1 bg-secondary-container h-[85%] rounded-t hover:h-[90%] transition-all"></div>
+                  <div class="flex-1 bg-tertiary-fixed h-[95%] rounded-t hover:h-[100%] transition-all"></div>
+                  <div class="flex-1 bg-tertiary-fixed-dim h-[90%] rounded-t hover:h-[95%] transition-all"></div>
+                  <div class="flex-1 bg-primary h-[94%] rounded-t hover:h-[100%] transition-all"></div>
+                </div>
+                <div class="flex justify-between items-center text-on-surface">
+                  <span class="font-label-sm text-label-sm text-outline">Response Rate</span>
+                  <span class="font-headline-sm text-[15px] font-bold text-primary">94.2%</span>
+                </div>
+              </div>
+
+              <!-- Card 4: Moments of Calm Exercise Preview (Interactive Trigger) -->
+              <div onclick="startCalmSession()" class="w-56 bg-tertiary-fixed rounded-2xl p-4 shadow-xl text-left text-on-tertiary-fixed transform rotate-1 hover:rotate-0 hover:scale-105 transition-all duration-300 cursor-pointer group">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">Micro-Relief</span>
+                  <span class="material-symbols-outlined text-[20px] group-hover:rotate-45 transition-transform">air</span>
+                </div>
+                <h4 class="font-headline-sm text-[16px] font-bold mb-1">Breathe & Reset</h4>
+                <p class="font-body-sm text-[12px] opacity-80 mb-3">3-minute paced box-breathing to decompress during high-focus sprints.</p>
+                <div class="bg-black/10 rounded-xl p-2.5 flex items-center justify-between group-hover:bg-black/15 transition-colors">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+                    <span class="font-label-sm text-[11px] font-semibold">Ambient Rain</span>
+                  </div>
+                  <span class="font-label-sm text-[11px] font-bold">3:00 • Play</span>
+                </div>
+              </div>
+
+              <!-- Card 5: Department Heatmap Matrix -->
+              <div class="w-56 bg-surface-container-lowest rounded-2xl p-4 shadow-xl text-left transform rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-300 border border-white/40">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Dept Stress Split</span>
+                  <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                </div>
+                <div class="space-y-2 mt-2">
+                  <div>
+                    <div class="flex justify-between font-label-sm text-[12px] mb-0.5">
+                      <span class="text-on-surface font-medium">Design & UX</span>
+                      <span class="text-tertiary font-semibold">22% Calm</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="bg-tertiary-fixed-dim h-full rounded-full" style="width: 22%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between font-label-sm text-[12px] mb-0.5">
+                      <span class="text-on-surface font-medium">Engineering</span>
+                      <span class="text-primary font-semibold">31% Low</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="bg-primary-fixed-dim h-full rounded-full" style="width: 31%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between font-label-sm text-[12px] mb-0.5">
+                      <span class="text-on-surface font-medium">Revenue / Sales</span>
+                      <span class="text-error font-semibold">44% Watch</span>
+                    </div>
+                    <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                      <div class="bg-error h-full rounded-full" style="width: 44%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 2. TRUSTED BY LOGO STRIP -->
+      <section class="w-full py-10 bg-surface-container-lowest border-y border-surface-container">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 text-center">
+          <p class="font-label-sm text-label-sm uppercase tracking-widest text-outline mb-6">
+            Designed for proactive, high-retention enterprise workplaces
+          </p>
+          <div class="grid grid-cols-2 md:grid-cols-6 gap-8 items-center opacity-70 grayscale hover:grayscale-0 transition-all">
+            <div class="flex items-center justify-center gap-2 hover:opacity-100 transition-opacity">
+              <span class="material-symbols-outlined text-[24px] text-primary">token</span>
+              <span class="font-headline-sm text-[17px] font-semibold tracking-tight text-on-surface">NEXUS.AI</span>
+            </div>
+            <div class="flex items-center justify-center gap-2 hover:opacity-100 transition-opacity">
+              <span class="material-symbols-outlined text-[24px] text-primary">deployed_code</span>
+              <span class="font-headline-sm text-[17px] font-semibold tracking-tight text-on-surface">STRATA LABS</span>
+            </div>
+            <div class="flex items-center justify-center gap-2 hover:opacity-100 transition-opacity">
+              <span class="material-symbols-outlined text-[24px] text-primary">blur_on</span>
+              <span class="font-headline-sm text-[17px] font-semibold tracking-tight text-on-surface">VERTEX CORP</span>
+            </div>
+            <div class="flex items-center justify-center gap-2 hover:opacity-100 transition-opacity">
+              <span class="material-symbols-outlined text-[24px] text-primary">all_inclusive</span>
+              <span class="font-headline-sm text-[17px] font-semibold tracking-tight text-on-surface">LUMINA</span>
+            </div>
+            <div class="flex items-center justify-center gap-2 hover:opacity-100 transition-opacity">
+              <span class="material-symbols-outlined text-[24px] text-primary">filter_drama</span>
+              <span class="font-headline-sm text-[17px] font-semibold tracking-tight text-on-surface">AURACORP</span>
+            </div>
+            <div class="flex items-center justify-center gap-2 hover:opacity-100 transition-opacity">
+              <span class="material-symbols-outlined text-[24px] text-primary">grain</span>
+              <span class="font-headline-sm text-[17px] font-semibold tracking-tight text-on-surface">PRISM TECH</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. WHY CALMPOP (Editorial Bento Section) -->
+      <section id="why-calmpop" class="w-full py-20 px-6 lg:px-12 bg-background">
+        <div class="max-w-7xl mx-auto">
+          
+          <!-- Section Header -->
+          <div class="text-center max-w-3xl mx-auto mb-16">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase tracking-wider mb-4">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              Why CalmPop
+            </div>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">
+              A healthier workplace begins with knowing how your people truly feel.
+            </h2>
+            <p class="font-body-lg text-body-lg text-on-surface-variant">
+              Traditional annual employee surveys fail because they are too late, too long, and too generic. CalmPop replaces fatigue with lightweight weekly clarity.
+            </p>
+          </div>
+
+          <!-- 3 Key Cards Bento Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            
+            <!-- Large Card 1: Visual Image + Check-in Focus (5 cols) -->
+            <div class="lg:col-span-5 bg-surface-container-lowest rounded-3xl p-8 shadow-sm flex flex-col justify-between border border-surface-container">
+              <div>
+                <div class="w-12 h-12 rounded-2xl bg-secondary-fixed/50 flex items-center justify-center text-secondary mb-6">
+                  <span class="material-symbols-outlined text-[26px]">checklist_rtl</span>
+                </div>
+                <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Zero-Fatigue System</span>
+                <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-3">Weekly Check-ins</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                  Short, dynamic 3-minute pulse evaluations randomly drawn from a validated 100+ clinical & organizational psychology question library.
+                </p>
+              </div>
+              <div class="relative w-full h-56 rounded-2xl overflow-hidden mt-4 shadow-sm group">
+                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Peaceful and productive modern collaborative office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7lhSthgSzKFjOWDVqOd5CzwkjHt9eaklzItV66NQBUxA93P140LZLv9pXOh-nDJwT1f7pv2_rCl-4x2KRJt1LlykrkyOzFRdNQEvOwmeFb08NBsFN841EuDntAa0gqHhjrWgH9P_DRA4eUFF5POWe3q4TsQOwnt3DhpaGBiN3TMGFHSIG-8ETEvvGwHVxtmzzNwAej3dQOL5rUttdc-Rls2ky0Ui6tbm8zjPd-a2TXGQmPWfsRnBosQ"/>
+                <div class="absolute bottom-3 left-3 right-3 bg-surface-container-lowest/90 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-md flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim"></span>
+                    <span class="font-label-md text-label-md text-on-surface font-semibold">100+ Validated Prompts</span>
+                  </div>
+                  <span class="font-label-sm text-label-sm text-outline">Randomized per user</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Clean White / Crisp Analytics Card (4 cols) -->
+            <div class="lg:col-span-4 bg-surface-container-low rounded-3xl p-8 shadow-sm flex flex-col justify-between border border-surface-container">
+              <div>
+                <div class="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-6">
+                  <span class="material-symbols-outlined text-[26px]">analytics</span>
+                </div>
+                <span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Protected Privacy</span>
+                <h3 class="font-headline-md text-headline-md text-on-surface mt-1 mb-3">Clear, Anonymized Insights</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                  Leaders gain instant executive clarity into team burnout trajectories without compromising individual employee confidentiality.
+                </p>
+              </div>
+              <div class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="font-label-md text-label-md text-on-surface font-medium">Confidence Score</span>
+                  <span class="font-headline-sm text-headline-sm text-primary font-bold">100%</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Every score aggregates at a minimum threshold of 5 team members to ensure total anonymity.
+                </p>
+                <div class="flex -space-x-2 pt-2">
+                  <div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-[12px] font-bold text-on-secondary-fixed">JD</div>
+                  <div class="w-8 h-8 rounded-full bg-tertiary-fixed flex items-center justify-center text-[12px] font-bold text-on-tertiary-fixed">SL</div>
+                  <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-[12px] font-bold text-on-primary-fixed">MR</div>
+                  <div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-[11px] font-bold text-on-surface-variant">+120</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Lime Green Accent Card (3 cols) -->
+            <div class="lg:col-span-3 bg-tertiary-fixed rounded-3xl p-8 shadow-md flex flex-col justify-between text-on-tertiary-fixed">
+              <div>
+                <div class="w-12 h-12 rounded-2xl bg-black/10 flex items-center justify-center text-on-tertiary-fixed mb-6">
+                  <span class="material-symbols-outlined text-[26px]">spa</span>
+                </div>
+                <span class="font-label-sm text-label-sm uppercase tracking-wider font-bold opacity-80">Active Relief</span>
+                <h3 class="font-headline-md text-headline-md mt-1 mb-3">Moments of Calm</h3>
+                <p class="font-body-md text-body-md font-medium opacity-90 mb-6">
+                  Interactive micro-relief games, soundscapes, and breath pacers right in the workspace when employees need a quick reset.
+                </p>
+              </div>
+              <div class="bg-on-tertiary-fixed text-on-primary rounded-2xl p-5 shadow-inner">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-label-sm text-label-sm text-tertiary-fixed uppercase font-semibold">Active Decompression</span>
+                  <span class="material-symbols-outlined text-tertiary-fixed text-[18px]">bolt</span>
+                </div>
+                <p class="font-headline-lg text-[28px] font-bold text-on-primary">6,800+</p>
+                <p class="font-body-sm text-[12px] text-outline-variant mb-3">Daily micro-resets taken across member companies.</p>
+                <button onclick="startCalmSession()" class="w-full py-2 bg-tertiary-fixed text-on-tertiary-fixed rounded-xl text-xs font-bold hover:bg-tertiary-fixed-dim transition-colors flex items-center justify-center gap-1">
+                  <span>Open Studio</span>
+                  <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. HOW IT WORKS (Connected 4-step sequence) -->
+      <section id="how-it-works" class="w-full py-20 px-6 lg:px-12 bg-surface-container-lowest border-t border-surface-container">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center max-w-2xl mx-auto mb-16">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/40 text-secondary font-label-sm text-label-sm uppercase tracking-wider mb-4">
+              <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              Step-by-step
+            </div>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface mb-3">How CalmPop seamlessly integrates into your workflow</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant">Effortless deployment with zero complex installation or administrative friction.</p>
+          </div>
+
+          <!-- 4 Connected Steps -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+            
+            <!-- Step 1 -->
+            <div class="bg-surface-container-low rounded-3xl p-7 flex flex-col justify-between hover:shadow-md transition-shadow border border-surface-container">
+              <div>
+                <div class="w-10 h-10 rounded-full bg-surface-container-lowest font-headline-sm text-headline-sm text-primary flex items-center justify-center font-bold mb-6 shadow-sm">
+                  01
+                </div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface mb-2 font-semibold">Register Company</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Quick company setup, define core departments, and select the optimal seat tier tailored to your team scale.
+                </p>
+              </div>
+              <button onclick="window.openRegistrationModal('starter')" class="mt-8 pt-4 flex items-center text-primary font-label-sm text-label-sm font-semibold gap-1 hover:underline text-left">
+                <span>2-minute setup</span>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+              </button>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-surface-container-low rounded-3xl p-7 flex flex-col justify-between hover:shadow-md transition-shadow border border-surface-container">
+              <div>
+                <div class="w-10 h-10 rounded-full bg-surface-container-lowest font-headline-sm text-headline-sm text-primary flex items-center justify-center font-bold mb-6 shadow-sm">
+                  02
+                </div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface mb-2 font-semibold">Invite Your Team</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Bulk CSV roster invite or direct Slack / HRIS integration. Every member receives a private, secure profile.
+                </p>
+              </div>
+              <div class="mt-8 pt-4 flex items-center text-primary font-label-sm text-label-sm font-semibold gap-1">
+                <span>Automated sync</span>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-surface-container-low rounded-3xl p-7 flex flex-col justify-between hover:shadow-md transition-shadow border border-surface-container">
+              <div>
+                <div class="w-10 h-10 rounded-full bg-surface-container-lowest font-headline-sm text-headline-sm text-primary flex items-center justify-center font-bold mb-6 shadow-sm">
+                  03
+                </div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface mb-2 font-semibold">Weekly Check-in</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant">
+                  30 dynamic questions arrive on your chosen day. Frictionless multi-device completion takes less than 3 minutes.
+                </p>
+              </div>
+              <button onclick="startSurveyDemo()" class="mt-8 pt-4 flex items-center text-primary font-label-sm text-label-sm font-semibold gap-1 hover:underline text-left">
+                <span>94% avg. completion</span>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+              </button>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="bg-tertiary-fixed rounded-3xl p-7 flex flex-col justify-between text-on-tertiary-fixed shadow-md">
+              <div>
+                <div class="w-10 h-10 rounded-full bg-on-tertiary-fixed text-tertiary-fixed font-headline-sm text-headline-sm flex items-center justify-center font-bold mb-6">
+                  04
+                </div>
+                <h3 class="font-headline-sm text-headline-sm mb-2 font-bold">Review Insights</h3>
+                <p class="font-body-sm text-body-sm font-medium opacity-90">
+                  Immediate executive dashboards show stress indices, work-life balance shifts, and recommended culture adjustments.
+                </p>
+              </div>
+              <button onclick="window.navigateView('admin')" class="mt-8 pt-4 flex items-center text-on-tertiary-fixed font-label-sm text-label-sm font-bold gap-1 hover:opacity-80 text-left">
+                <span>Actionable reports</span>
+                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. EDITORIAL BENTO FEATURES GRID -->
+      <section id="features" class="w-full py-20 px-6 lg:px-12 bg-background">
+        <div class="max-w-7xl mx-auto">
+          <div class="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
+            <div>
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase tracking-wider mb-4">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                Comprehensive Features
+              </div>
+              <h2 class="font-headline-lg text-headline-lg text-on-surface">Engineered for sustainable team resilience</h2>
+            </div>
+            <p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+              Everything HR managers and people leaders need to foster psychological safety and proactively curb team burnout.
+            </p>
+          </div>
+
+          <!-- Bento Grid (6 cards) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Bento 1 -->
+            <div onclick="startSurveyDemo()" class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-primary/30 transition-all border border-surface-container cursor-pointer group">
+              <div class="w-12 h-12 rounded-2xl bg-primary-fixed/50 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[24px]">quiz</span>
+              </div>
+              <div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Interactive Weekly Surveys</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">
+                  Randomized sets of 30 research-backed questions safeguard against survey habituation and automated pattern answering.
+                </p>
+              </div>
+              <div class="bg-surface-container-low px-4 py-3 rounded-2xl flex items-center justify-between">
+                <span class="font-label-sm text-label-sm text-outline">Library Depth</span>
+                <span class="font-label-md text-label-md font-bold text-on-surface">100+ Question Pools</span>
+              </div>
+            </div>
+
+            <!-- Bento 2 -->
+            <div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-all border border-surface-container">
+              <div class="w-12 h-12 rounded-2xl bg-secondary-fixed/50 flex items-center justify-center text-secondary mb-6">
+                <span class="material-symbols-outlined text-[24px]">lock</span>
+              </div>
+              <div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Private Employee Logs</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">
+                  Individual staff members get their own private wellness journal to track personal energy fluctuations over months.
+                </p>
+              </div>
+              <div class="bg-surface-container-low px-4 py-3 rounded-2xl flex items-center justify-between">
+                <span class="font-label-sm text-label-sm text-outline">Privacy Guarantee</span>
+                <span class="font-label-md text-label-md font-bold text-tertiary">Zero Manager Tracking</span>
+              </div>
+            </div>
+
+            <!-- Bento 3 -->
+            <div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-all border border-surface-container">
+              <div class="w-12 h-12 rounded-2xl bg-tertiary-fixed/60 flex items-center justify-center text-on-tertiary-fixed mb-6">
+                <span class="material-symbols-outlined text-[24px]">grid_view</span>
+              </div>
+              <div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Department Heatmaps</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">
+                  Spot whether deadline pressures are concentrated in Product, Engineering, or Customer Success without isolating individuals.
+                </p>
+              </div>
+              <div class="bg-surface-container-low px-4 py-3 rounded-2xl flex items-center justify-between">
+                <span class="font-label-sm text-label-sm text-outline">Aggregation Tier</span>
+                <span class="font-label-md text-label-md font-bold text-on-surface">5-Seat Threshold</span>
+              </div>
+            </div>
+
+            <!-- Bento 4 -->
+            <div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-all border border-surface-container">
+              <div class="w-12 h-12 rounded-2xl bg-surface-container-high flex items-center justify-center text-on-surface mb-6">
+                <span class="material-symbols-outlined text-[24px]">schedule</span>
+              </div>
+              <div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Flexible Cadence</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">
+                  Schedule surveys for Thursday afternoon reflection or Monday morning kickoffs. Set auto-reminders that respect timezones.
+                </p>
+              </div>
+              <div class="bg-surface-container-low px-4 py-3 rounded-2xl flex items-center justify-between">
+                <span class="font-label-sm text-label-sm text-outline">Delivery Day</span>
+                <span class="font-label-md text-label-md font-bold text-primary">Fully Customizable</span>
+              </div>
+            </div>
+
+            <!-- Bento 5 -->
+            <div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-all border border-surface-container">
+              <div class="w-12 h-12 rounded-2xl bg-primary-fixed flex items-center justify-center text-primary mb-6">
+                <span class="material-symbols-outlined text-[24px]">group_add</span>
+              </div>
+              <div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Seat Management</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">
+                  Dynamically assign and reallocate seats as contractor headcounts change. Scale smoothly from 15 to 5,000+ employees.
+                </p>
+              </div>
+              <div class="bg-surface-container-low px-4 py-3 rounded-2xl flex items-center justify-between">
+                <span class="font-label-sm text-label-sm text-outline">Seat Allocation</span>
+                <span class="font-label-md text-label-md font-bold text-on-surface">Real-Time Proration</span>
+              </div>
+            </div>
+
+            <!-- Bento 6 -->
+            <div onclick="startCalmSession()" class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-tertiary-fixed transition-all border border-surface-container cursor-pointer group">
+              <div class="w-12 h-12 rounded-2xl bg-tertiary-fixed-dim/40 flex items-center justify-center text-tertiary mb-6 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[24px]">sports_esports</span>
+              </div>
+              <div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-2">Stress-Relief Tooling</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">
+                  Measure overall company engagement with relaxation practices like rhythmic breathing, ambient soundscapes, and sensory puzzles.
+                </p>
+              </div>
+              <div class="bg-surface-container-low px-4 py-3 rounded-2xl flex items-center justify-between">
+                <span class="font-label-sm text-label-sm text-outline">Engagement Lift</span>
+                <span class="font-label-md text-label-md font-bold text-tertiary">+38% Habit Adoption</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. REALISTIC ADMIN DASHBOARD / FOR COMPANIES PREVIEW (Interactive) -->
+      <section id="for-companies" data-alias="dashboard" class="w-full py-20 px-6 lg:px-12 bg-surface-container-low border-y border-surface-container">
+        <div class="max-w-7xl mx-auto">
+          
+          <div class="text-center max-w-3xl mx-auto mb-14">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-highest text-on-surface font-label-sm text-label-sm uppercase tracking-wider mb-4">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              Executive Command Center
+            </div>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface mb-3">Live workplace sentiment, simplified</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant">Turn complex emotional health metrics into clear leadership actions.</p>
+          </div>
+
+          <!-- Dashboard Mockup Window -->
+          <div class="w-full bg-surface-container-lowest rounded-3xl shadow-xl overflow-hidden border border-surface-container">
+            
+            <!-- Mockup Header Bar -->
+            <div class="bg-surface-container-high px-6 py-4 flex flex-wrap items-center justify-between gap-4 border-b border-surface-container">
+              <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-error"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                <div class="w-3 h-3 rounded-full bg-tertiary-fixed-dim"></div>
+                <span class="font-label-sm text-label-sm text-outline ml-4">calmpop.app/org/strata-labs/overview</span>
+              </div>
+              
+              <div class="flex items-center gap-3">
+                <button onclick="showToast('Survey cadence: Active every Thursday at 2:00 PM', 'schedule')" class="font-label-sm text-label-sm px-3 py-1 rounded-full bg-surface-container-lowest text-on-surface font-medium hover:bg-surface transition-colors flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+                  <span>Weekly Cadence: Active</span>
+                </button>
+                <div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-[11px]">HR</div>
+              </div>
+            </div>
+
+            <!-- Dashboard Body Content -->
+            <div class="p-6 sm:p-10">
+              
+              <!-- Top Metric Cards Row -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                
+                <div class="bg-surface-container-low p-5 rounded-2xl border border-surface-container/60 hover:shadow-sm transition-shadow">
+                  <span class="font-label-sm text-label-sm text-outline">Enrolled Members</span>
+                  <div class="flex items-baseline gap-2 mt-2">
+                    <span class="font-headline-lg text-[28px] font-bold text-on-surface">148</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant">/ 150 Seats</span>
+                  </div>
+                  <div class="w-full bg-surface-container h-1.5 rounded-full mt-3 overflow-hidden">
+                    <div class="bg-primary h-full rounded-full" style="width: 98.6%"></div>
+                  </div>
+                </div>
+
+                <div class="bg-surface-container-low p-5 rounded-2xl border border-surface-container/60 hover:shadow-sm transition-shadow">
+                  <span class="font-label-sm text-label-sm text-outline">Weekly Completion</span>
+                  <div class="flex items-baseline gap-2 mt-2">
+                    <span class="font-headline-lg text-[28px] font-bold text-primary">88.4%</span>
+                    <span class="font-label-sm text-label-sm text-tertiary flex items-center font-semibold">
+                      <span class="material-symbols-outlined text-[14px]">arrow_upward</span> +3.1%
+                    </span>
+                  </div>
+                  <span class="font-label-sm text-[11px] text-outline mt-2 block">131 of 148 submitted</span>
+                </div>
+
+                <div class="bg-surface-container-low p-5 rounded-2xl border border-surface-container/60 hover:shadow-sm transition-shadow">
+                  <span class="font-label-sm text-label-sm text-outline">Company Stress Index</span>
+                  <div class="flex items-baseline gap-2 mt-2">
+                    <span class="font-headline-lg text-[28px] font-bold text-on-surface">31%</span>
+                    <span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-bold">Healthy Calm</span>
+                  </div>
+                  <span class="font-label-sm text-[11px] text-outline mt-2 block">-4.2% reduction vs Q3</span>
+                </div>
+
+                <div class="bg-surface-container-low p-5 rounded-2xl border border-surface-container/60 hover:shadow-sm transition-shadow">
+                  <span class="font-label-sm text-label-sm text-outline">Calm Tool Sessions</span>
+                  <div class="flex items-baseline gap-2 mt-2">
+                    <span class="font-headline-lg text-[28px] font-bold text-on-surface">342</span>
+                    <span class="font-label-sm text-label-sm text-secondary font-semibold">This Week</span>
+                  </div>
+                  <span class="font-label-sm text-[11px] text-outline mt-2 block">Top activity: Box Breathing</span>
+                </div>
+
+              </div>
+
+              <!-- Mid Dashboard Details (Charts + Feed) -->
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Left Chart: Department Breakdown (7 cols) -->
+                <div class="lg:col-span-7 bg-surface-container-low p-6 rounded-2xl border border-surface-container/60">
+                  <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <div>
+                      <h3 class="font-headline-sm text-[16px] text-on-surface font-semibold">Stress Breakdown by Department</h3>
+                      <p class="font-label-sm text-label-sm text-on-surface-variant">Click any team to inspect segmentation</p>
+                    </div>
+
+                    <!-- Time Filter Dropdown / Toggle -->
+                    <div class="flex items-center gap-1 bg-surface-container-lowest px-2 py-1 rounded-full text-xs border border-surface-container">
+                      <button onclick="setTimeWindow('Last 7 Days')" class="px-2 py-0.5 rounded-full hover:bg-surface-container transition-colors">7D</button>
+                      <button onclick="setTimeWindow('Last 30 Days')" id="dash-time-filter" class="px-2 py-0.5 rounded-full bg-surface-container-high font-semibold text-primary">30D</button>
+                      <button onclick="setTimeWindow('Quarterly')" class="px-2 py-0.5 rounded-full hover:bg-surface-container transition-colors">Q4</button>
+                    </div>
+                  </div>
+
+                  <!-- Department Filter Pills -->
+                  <div class="flex flex-wrap gap-1.5 mb-5">
+                    <button onclick="filterDepartment('all', this)" class="dept-pill px-3 py-1 rounded-full text-xs font-semibold bg-primary text-on-primary shadow-sm transition-all">All Depts</button>
+                    <button onclick="filterDepartment('design', this)" class="dept-pill px-3 py-1 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all">Product & Design</button>
+                    <button onclick="filterDepartment('engineering', this)" class="dept-pill px-3 py-1 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all">Platform Engineering</button>
+                    <button onclick="filterDepartment('sales', this)" class="dept-pill px-3 py-1 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all">Enterprise Sales</button>
+                    <button onclick="filterDepartment('success', this)" class="dept-pill px-3 py-1 rounded-full text-xs font-semibold bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-all">Customer Success</button>
+                  </div>
+
+                  <!-- Dynamic Department Bars Container -->
+                  <div id="dash-dept-bars" class="space-y-4">
+                    <div>
+                      <div class="flex justify-between font-label-md text-label-md mb-1.5">
+                        <span class="font-medium text-on-surface">Product & Design</span>
+                        <span class="font-semibold text-tertiary">24% • Calm</span>
+                      </div>
+                      <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+                        <div class="bg-tertiary-fixed-dim h-full rounded-full" style="width: 24%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between font-label-md text-label-md mb-1.5">
+                        <span class="font-medium text-on-surface">Platform Engineering</span>
+                        <span class="font-semibold text-primary">32% • Normal</span>
+                      </div>
+                      <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+                        <div class="bg-primary-container h-full rounded-full" style="width: 32%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between font-label-md text-label-md mb-1.5">
+                        <span class="font-medium text-on-surface">Enterprise Sales</span>
+                        <span class="font-semibold text-secondary">42% • Moderate Pressure</span>
+                      </div>
+                      <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+                        <div class="bg-secondary-container h-full rounded-full" style="width: 42%"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="flex justify-between font-label-md text-label-md mb-1.5">
+                        <span class="font-medium text-on-surface">Customer Success</span>
+                        <span class="font-semibold text-primary">28% • Calm</span>
+                      </div>
+                      <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+                        <div class="bg-tertiary-fixed-dim h-full rounded-full" style="width: 28%"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Feed: Recent Insights & Micro Actions (5 cols) -->
+                <div class="lg:col-span-5 bg-surface-container-low p-6 rounded-2xl flex flex-col justify-between border border-surface-container/60">
+                  <div>
+                    <h3 class="font-headline-sm text-[16px] text-on-surface font-semibold mb-1">Key Actionable Insights</h3>
+                    <p class="font-label-sm text-label-sm text-on-surface-variant mb-4">Algorithmic alerts from this week's survey</p>
+                    
+                    <div class="space-y-3">
+                      <div class="p-3 bg-surface-container-lowest rounded-xl flex items-start gap-3 border border-surface-container/50">
+                        <span class="material-symbols-outlined text-tertiary text-[20px] mt-0.5">sentiment_satisfied</span>
+                        <div>
+                          <p class="font-label-md text-label-md text-on-surface font-semibold">Positive Workload Balance</p>
+                          <p class="font-body-sm text-[12px] text-on-surface-variant">78% reported reasonable meeting-to-focus-time ratios.</p>
+                        </div>
+                      </div>
+
+                      <div class="p-3 bg-surface-container-lowest rounded-xl flex items-start gap-3 border border-surface-container/50">
+                        <span class="material-symbols-outlined text-secondary text-[20px] mt-0.5">schedule</span>
+                        <div>
+                          <p class="font-label-md text-label-md text-on-surface font-semibold">Late-Week Fatigue Spike</p>
+                          <p class="font-body-sm text-[12px] text-on-surface-variant">Friday stress marks rose in Sales prior to end-of-quarter closes.</p>
+                        </div>
+                      </div>
+
+                      <div class="p-3 bg-surface-container-lowest rounded-xl flex items-start gap-3 border border-surface-container/50">
+                        <span class="material-symbols-outlined text-primary text-[20px] mt-0.5">verified_user</span>
+                        <div>
+                          <p class="font-label-md text-label-md text-on-surface font-semibold">High Trust Index</p>
+                          <p class="font-body-sm text-[12px] text-on-surface-variant">91% feel supported by their direct managers during crunch times.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 pt-3 flex items-center justify-between text-outline text-[11px] border-t border-surface-container">
+                    <span>* Fictional organizational dataset.</span>
+                    <button onclick="openModal('export-modal')" class="text-primary font-semibold hover:underline flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[14px]">download</span>
+                      <span>Export Executive Brief</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 7. CONFIGURABLE PRICING SECTION & SEAT CALCULATOR -->
+      <section id="pricing" class="w-full py-20 px-6 lg:px-12 bg-background">
+        <div class="max-w-7xl mx-auto">
+          
+          <div class="text-center max-w-3xl mx-auto mb-12">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase tracking-wider mb-4">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              Transparent Investment
+            </div>
+            <h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Predictable plans for teams of every dimension</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mb-8">
+              All tiers include full access to the 100+ vetted question bank, weekly automated scheduling, and privacy-shielded reporting.
+            </p>
+
+            <!-- Billing Cycle Toggle Micro-Interaction -->
+            <div class="inline-flex items-center p-1.5 bg-surface-container-high rounded-full shadow-inner" id="pricing-toggle-container">
+              <button class="px-5 py-2 rounded-full font-label-md text-label-md bg-surface-container-lowest text-on-surface font-semibold shadow-sm transition-all" id="toggle-monthly" onclick="switchBilling('monthly')">Monthly</button>
+              <button class="px-5 py-2 rounded-full font-label-md text-label-md text-on-surface-variant font-medium hover:text-on-surface transition-all flex items-center gap-1.5" id="toggle-annual" onclick="switchBilling('annual')">
+                <span>Annual</span>
+                <span class="bg-tertiary-fixed text-on-tertiary-fixed font-bold text-[10px] px-2 py-0.5 rounded-full">Save 20%</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Interactive Seat Calculator Widget -->
+          <div class="max-w-3xl mx-auto mb-16 bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm border border-surface-container">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+              <div>
+                <span class="font-label-sm uppercase text-outline tracking-wider font-semibold">Interactive Plan Calculator</span>
+                <h3 class="font-headline-sm text-lg font-bold text-on-surface">Estimate Investment for Your Headcount</h3>
+              </div>
+              <div class="text-right">
+                <span class="font-label-sm text-outline">Selected Team Size:</span>
+                <span id="seat-slider-val" class="font-headline-md text-2xl font-bold text-primary ml-1">45</span>
+                <span class="text-xs font-semibold text-on-surface-variant">employees</span>
+              </div>
+            </div>
+
+            <!-- Slider Bar -->
+            <input type="range" min="10" max="250" value="45" step="5" oninput="onSeatSliderChange(this.value)" class="w-full cursor-pointer mb-4" aria-label="Employee Seat Count Slider"/>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 text-sm bg-surface-container-low p-4 rounded-2xl">
+              <div>
+                <span class="text-outline text-xs block">Estimated Investment</span>
+                <span id="calc-est-monthly" class="font-bold text-xl text-on-surface">₹21,564/mo</span>
+              </div>
+              <div>
+                <span class="text-outline text-xs block">Recommended Plan</span>
+                <span id="calc-recommended-tier" class="font-semibold text-primary">Growth Plan (Up to 100 seats)</span>
+              </div>
+              <div>
+                <span id="calc-savings" class="text-xs font-bold text-tertiary bg-tertiary-fixed/30 px-3 py-1.5 rounded-full">Switch to annual to save 20%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pricing Cards Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+            
+            <!-- Tier 1: Starter -->
+            <div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow border border-surface-container">
+              <div>
+                <div class="inline-block px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold mb-4">
+                  Starter
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface mb-2 font-semibold">For Small Teams</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Foundational check-ins and burnout prevention for early-stage crews.</p>
+                <div class="mb-6">
+                  <span class="font-display text-[44px] font-bold text-on-surface tracking-tight" data-price-starter="">₹349</span>
+                  <span class="font-body-sm text-body-sm text-on-surface-variant">/ employee / mo</span>
+                  <div class="text-[12px] font-semibold text-primary mt-1">Up to 25 employees</div>
+                  <div class="text-[11px] text-outline mt-0.5" id="starter-sub-rate">₹279.20/mo per seat billed annually</div>
+                </div>
+                <div class="space-y-3 font-body-sm text-body-sm text-on-surface-variant mb-8">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Full 100+ Question Bank</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Weekly automated survey cadence</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Basic company stress index</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Moments of Calm audio resets</span>
+                  </div>
+                </div>
+              </div>
+              <button onclick="window.openRegistrationModal('starter', window.currentBillingCycle || 'monthly')" class="w-full text-center py-3 px-6 rounded-full bg-surface-container-high text-on-surface hover:bg-surface-container-highest font-label-lg text-label-lg transition-all font-semibold">
+                Start Demo with Starter
+              </button>
+            </div>
+
+            <!-- Tier 2: Growth (Featured with lime accent highlight) -->
+            <div class="bg-surface-container-lowest rounded-3xl p-8 shadow-xl flex flex-col justify-between relative transform lg:-translate-y-2 border-2 border-tertiary-fixed">
+              <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold uppercase tracking-wide shadow-md">
+                Most Popular
+              </div>
+              <div>
+                <div class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary font-label-sm text-label-sm font-semibold mb-4 mt-2">
+                  Growth
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface mb-2 font-semibold">Scaling Organizations</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Deep departmental filtering and advanced executive reporting.</p>
+                <div class="mb-6">
+                  <span class="font-display text-[44px] font-bold text-on-surface tracking-tight" data-price-growth="">₹599</span>
+                  <span class="font-body-sm text-body-sm text-on-surface-variant">/ employee / mo</span>
+                  <div class="text-[12px] font-semibold text-primary mt-1">Up to 100 employees</div>
+                  <div class="text-[11px] text-outline mt-0.5" id="growth-sub-rate">₹479.20/mo per seat billed annually</div>
+                </div>
+                <div class="space-y-3 font-body-sm text-body-sm text-on-surface-variant mb-8">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span><strong>Everything in Starter, plus:</strong></span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Department heatmap segmentation</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Custom survey delivery schedule</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Interactive stress-relief game hub</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Slack & Microsoft Teams bot delivery</span>
+                  </div>
+                </div>
+              </div>
+              <button onclick="window.openRegistrationModal('growth', window.currentBillingCycle || 'annual')" class="w-full text-center py-3.5 px-6 rounded-full bg-tertiary-fixed text-on-tertiary-fixed hover:bg-tertiary-fixed-dim font-label-lg text-label-lg font-bold shadow-md transition-all">
+                Get Started with Growth
+              </button>
+            </div>
+
+            <!-- Tier 3: Enterprise -->
+            <div class="bg-surface-container-lowest rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow border border-surface-container">
+              <div>
+                <div class="inline-block px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold mb-4">
+                  Enterprise
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface mb-2 font-semibold">Global Workforces</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Bespoke integrations, customized analytics, and HIPAA compliance.</p>
+                <div class="mb-6">
+                  <span class="font-display text-[44px] font-bold text-on-surface tracking-tight" data-price-enterprise="">Custom</span>
+                  <div class="text-[12px] font-semibold text-primary mt-1">Configurable limit (500+ seats)</div>
+                  <div class="text-[11px] text-outline mt-0.5">Volume discounts available</div>
+                </div>
+                <div class="space-y-3 font-body-sm text-body-sm text-on-surface-variant mb-8">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Unlimited seat capacity & flexible sync</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>SSO, SAML & Okta Integration</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Dedicated Organizational Psychologist</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>Custom Question Set Authoring</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-tertiary text-[18px]">check</span>
+                    <span>SOC2 Type II & Enterprise BAA</span>
+                  </div>
+                </div>
+              </div>
+              <button onclick="window.openRegistrationModal('enterprise', window.currentBillingCycle || 'annual')" class="w-full text-center py-3 px-6 rounded-full bg-primary text-on-primary hover:bg-primary-container font-label-lg text-label-lg transition-all font-semibold">
+                Speak to Enterprise Sales
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. FINAL HIGH-IMPACT CTA SECTION -->
+      <section class="w-full py-16 px-6 lg:px-12 bg-background">
+        <div class="max-w-7xl mx-auto rounded-3xl bg-gradient-to-r from-primary via-primary-container to-secondary p-10 sm:p-16 text-center text-on-primary shadow-2xl relative overflow-hidden">
+          
+          <!-- Glow ambient element -->
+          <div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-tertiary-fixed/20 blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10 max-w-3xl mx-auto">
+            <h2 class="font-display text-display text-on-primary mb-6 tracking-tight">
+              Make room for better workdays.
+            </h2>
+            <p class="font-body-lg text-body-lg text-on-primary/90 mb-10 max-w-xl mx-auto">
+              Equip your teams with the self-awareness, psychological safety, and micro-relief tools to perform at their natural best.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button onclick="window.openRegistrationModal('growth')" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-tertiary-fixed text-on-tertiary-fixed hover:bg-tertiary-fixed-dim font-label-lg text-label-lg font-bold shadow-lg transition-all">
+                <span>Get Started with CalmPop</span>
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </button>
+              <button onclick="window.navigateView('admin')" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/15 hover:bg-white/25 text-on-primary border border-white/30 font-label-lg text-label-lg backdrop-blur-md transition-all">
+                <span>Try Demo Admin Experience</span>
+              </button>
+            </div>
+            <p class="font-label-sm text-label-sm text-on-primary/75 mt-8">
+              Demonstration Environment • Fully Simulated INR Subscriptions • Instant Setup
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="w-full bg-surface-container-lowest pt-16 pb-12 border-t border-surface-container shadow-[0_-1px_8px_rgba(0,0,0,0.02)]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10 pb-16">
+        
+        <div class="lg:col-span-2 flex flex-col items-start">
+          <div class="flex items-center gap-3 mb-4">
+            <img alt="CalmPop Brand Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1WGEh00kXjxC-nRTncmjpGib0cLyCbt9ALqLbrBhfdig6r5L9wi5sgO3MFI_wd_iXaIRyJFIkstCjbWXKwffm7ECqDcLAgv5Kcx0KpXhprJ8ki9DKEbQHcSDfDUDG0RctReHBwPpK-6UbUizp5IS9wtVcYr8HNxHH54u-v3orL0pZ037sUoCqRDo4S_OsT7sylMzGbyHL6ETa-ofrjs0QX37bw6xNCP8HNV9iAL4K1meefYhcZo474dido-"/>
+            <span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">CalmPop</span>
+          </div>
+          <p class="font-body-md text-body-md text-on-surface-variant max-w-sm mb-6">
+            Helping organizations cultivate healthier, happier, and calmer workplaces through proactive stress insights and micro-relief activities.
+          </p>
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm">
+            <span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+            Enterprise Wellbeing Standard
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-2">Product</h4>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#how-it-works">How It Works</a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#features">Features</a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="javascript:void(0)" onclick="startSurveyDemo()">Weekly Pulse</a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="javascript:void(0)" onclick="startCalmSession()">Moments of Calm</a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#pricing">Pricing</a>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-2">Platform Portals</h4>
+          <a class="font-body-sm text-body-sm text-primary font-semibold hover:underline flex items-center gap-1" href="javascript:void(0)" onclick="window.navigateView('admin')">
+            <span class="material-symbols-outlined text-[16px]">dashboard</span>
+            <span>Company Admin Dashboard</span>
+          </a>
+          <a class="font-body-sm text-body-sm text-secondary font-semibold hover:underline flex items-center gap-1" href="javascript:void(0)" onclick="window.navigateView('superadmin')">
+            <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+            <span>Platform Superadmin</span>
+          </a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1" href="javascript:void(0)" onclick="window.navigateView('checkout')">
+            <span class="material-symbols-outlined text-[16px]">shopping_cart_checkout</span>
+            <span>Mock Checkout Flow</span>
+          </a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#why-calmpop">Data Privacy Shield</a>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-2">Company</h4>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="#why-calmpop">About Us</a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="javascript:void(0)" onclick="showToast('Careers page opening soon!', 'work')">Careers</a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="javascript:void(0)" onclick="showToast('Support: contact@calmpop.app', 'mail')">Contact Support</a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="javascript:void(0)" onclick="showToast('Press kit downloaded', 'news')">Press & Media</a>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-2">Legal & Demo</h4>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="javascript:void(0)" onclick="showToast('CalmPop enforces strict GDPR & SOC2 anonymity', 'security')">Privacy Policy</a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="javascript:void(0)" onclick="showToast('Terms of Service standard license', 'description')">Terms of Service</a>
+          <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface transition-colors" href="javascript:void(0)" onclick="showToast('Demo Mode: No real financial charges or live gateways', 'verified')">Demo Mode Notice</a>
+        </div>
+
+      </div>
+
+      <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 bg-surface-container-low px-6 py-4 rounded-2xl border border-surface-container">
+        <p class="font-body-sm text-body-sm text-on-surface-variant">© 2025 CalmPop Technologies, Inc. All rights reserved.</p>
+        <p class="font-label-sm text-label-sm text-on-surface-variant text-center md:text-right">Demonstration project. All subscriptions and payments are simulated mocks.</p>
+      </div>
+    </div>
+  </footer>
+</div> <!-- /#landing-view -->
+
+<!-- APPLICATION VIEWS CONTAINER (Admin, Superadmin, Checkout, Receipt) -->
+<div id="app-view-container" class="hidden min-h-screen"></div>
+
+<!-- Company Registration Modal (Step 1 of Subscription Flow) -->
+<dialog id="registration-modal" closedby="any" class="backdrop:bg-black/60 p-0 rounded-3xl bg-transparent border-0 max-w-xl w-[94vw]">
+  <div id="registration-modal-content" class="modal-card bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-2xl max-w-xl w-[94vw] border border-surface-container relative">
+    <!-- Populated dynamically by src/views/registration.js -->
+  </div>
+</dialog>
+
+  <!-- ========================================== -->
+  <!-- MODALS & DIALOGS (Modern Web Standard)     -->
+  <!-- ========================================== -->
+
+  <!-- 1. Interactive 30-Second Check-in Survey Dialog -->
+  <dialog id="survey-modal" closedby="any" aria-labelledby="survey-modal-title">
+    <div class="modal-card bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-2xl max-w-lg w-[92vw] border border-surface-container text-on-surface relative">
+      <button onclick="closeModal('survey-modal')" class="absolute top-5 right-5 text-outline hover:text-on-surface p-1 rounded-full hover:bg-surface-container transition-colors" aria-label="Close survey">
+        <span class="material-symbols-outlined text-[22px]">close</span>
+      </button>
+      <div id="survey-modal-content">
+        <!-- Content dynamically populated by src/main.js -->
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 2. Moments of Calm - Box Breathing & Ambient Rain Studio Dialog -->
+  <dialog id="calm-modal" closedby="any" aria-labelledby="calm-modal-title">
+    <div class="modal-card bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-2xl max-w-md w-[92vw] border border-surface-container text-on-surface relative text-center">
+      <button onclick="stopCalmSession()" class="absolute top-5 right-5 text-outline hover:text-on-surface p-1 rounded-full hover:bg-surface-container transition-colors" aria-label="Close studio">
+        <span class="material-symbols-outlined text-[22px]">close</span>
+      </button>
+
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-xs font-bold mb-4">
+        <span class="material-symbols-outlined text-[14px]">spa</span>
+        <span>Moments of Calm Studio</span>
+      </div>
+
+      <h3 id="calm-modal-title" class="font-headline-md text-2xl font-bold text-on-surface mb-1">Paced Box Breathing</h3>
+      <p class="font-body-sm text-xs text-on-surface-variant mb-6">4s Inhale • 4s Hold • 4s Exhale • 4s Rest</p>
+
+      <!-- Breathing Visual Stage -->
+      <div class="relative w-56 h-56 mx-auto flex items-center justify-center my-6">
+        <!-- Outer Glowing Circle -->
+        <div id="breathe-anim-circle" class="breathe-circle absolute inset-0 rounded-full bg-gradient-to-tr from-secondary-container/40 via-tertiary-fixed/40 to-primary/30 transition-transform duration-1000 ease-in-out"></div>
+        
+        <!-- Center Core Display -->
+        <div class="relative z-10 w-36 h-36 rounded-full bg-surface-container-lowest shadow-lg flex flex-col items-center justify-center p-2 border border-surface-container">
+          <span id="breath-phase-sec" class="font-headline-lg text-3xl font-bold text-primary">4s</span>
+          <span id="breath-phase-title" class="font-label-sm text-xs font-semibold text-on-surface mt-1">Breathe In</span>
+          <span id="breath-phase-sub" class="text-[10px] text-outline text-center px-1">Slow & deep</span>
+        </div>
+      </div>
+
+      <!-- Session Info & Audio Controls -->
+      <div class="flex items-center justify-between bg-surface-container-low p-3 rounded-2xl mb-6">
+        <div class="flex items-center gap-2 text-left">
+          <span class="material-symbols-outlined text-primary text-[20px]">timer</span>
+          <div>
+            <span class="text-[10px] text-outline uppercase font-semibold block">Time Left</span>
+            <span id="breath-timer-text" class="text-xs font-bold text-on-surface">3:00</span>
+          </div>
+        </div>
+
+        <button id="btn-soundscape-toggle" onclick="toggleSoundscape()" class="px-3 py-1.5 rounded-xl bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-semibold flex items-center gap-1.5 transition-all">
+          <span id="soundscape-icon" class="material-symbols-outlined text-[16px]">volume_off</span>
+          <span id="soundscape-label">Ambient Rain: Muted</span>
+        </button>
+      </div>
+
+      <button onclick="stopCalmSession()" class="w-full py-3 rounded-full bg-primary text-on-primary font-label-lg font-semibold hover:bg-primary-container transition-all">
+        Complete & Return to Work
+      </button>
+    </div>
+  </dialog>
+
+  <!-- 3. Executive PDF Brief Preview Dialog -->
+  <dialog id="export-modal" closedby="any" aria-labelledby="export-modal-title">
+    <div class="modal-card bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-2xl max-w-xl w-[92vw] border border-surface-container text-on-surface relative">
+      <button onclick="closeModal('export-modal')" class="absolute top-5 right-5 text-outline hover:text-on-surface p-1 rounded-full hover:bg-surface-container transition-colors" aria-label="Close export">
+        <span class="material-symbols-outlined text-[22px]">close</span>
+      </button>
+
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-[24px]">description</span>
+        </div>
+        <div>
+          <h3 id="export-modal-title" class="font-headline-sm text-lg font-bold text-on-surface">Executive Wellbeing Brief (PDF)</h3>
+          <p class="font-body-sm text-xs text-on-surface-variant">Confidential Leadership Summary • Strata Labs</p>
+        </div>
+      </div>
+
+      <div class="bg-surface-container-low rounded-2xl p-5 mb-6 space-y-3 text-sm border border-surface-container">
+        <div class="flex justify-between border-b border-surface-container pb-2">
+          <span class="text-on-surface-variant">Reporting Interval:</span>
+          <span class="font-semibold text-on-surface">Oct 16 – Oct 23, 2025</span>
+        </div>
+        <div class="flex justify-between border-b border-surface-container pb-2">
+          <span class="text-on-surface-variant">Active Response Rate:</span>
+          <span class="font-semibold text-primary">88.4% (131 responses)</span>
+        </div>
+        <div class="flex justify-between border-b border-surface-container pb-2">
+          <span class="text-on-surface-variant">Composite Workplace Stress Index:</span>
+          <span class="font-semibold text-tertiary">31% (Healthy Low)</span>
+        </div>
+        <div class="flex justify-between border-b border-surface-container pb-2">
+          <span class="text-on-surface-variant">Highest Priority Recommendation:</span>
+          <span class="font-semibold text-on-surface">Address end-of-quarter pressure in Sales</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-on-surface-variant">Data Privacy Attestation:</span>
+          <span class="font-semibold text-tertiary">100% Anonymized (&gt;5 per team)</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-end gap-3">
+        <button onclick="window.print()" class="w-full sm:w-auto px-5 py-2.5 rounded-full bg-primary text-on-primary font-semibold text-sm hover:bg-primary-container transition-all flex items-center justify-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">print</span>
+          <span>Print / Save PDF</span>
+        </button>
+        <button onclick="closeModal('export-modal'); showToast('Executive Brief exported successfully', 'download_done')" class="w-full sm:w-auto px-5 py-2.5 rounded-full bg-surface-container-high text-on-surface font-medium text-sm hover:bg-surface-container-highest transition-all">
+          Close
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 4. Sign In / Role Switcher Dialog -->
+  <dialog id="login-modal" closedby="any" aria-labelledby="login-modal-title">
+    <div class="modal-card bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-2xl max-w-md w-[92vw] border border-surface-container text-on-surface relative">
+      <button onclick="closeModal('login-modal')" class="absolute top-5 right-5 text-outline hover:text-on-surface p-1 rounded-full hover:bg-surface-container transition-colors" aria-label="Close login">
+        <span class="material-symbols-outlined text-[22px]">close</span>
+      </button>
+
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mx-auto mb-3">
+          <span class="material-symbols-outlined text-[24px]">lock</span>
+        </div>
+        <h3 id="login-modal-title" class="font-headline-sm text-xl font-bold text-on-surface">CalmPop Portals</h3>
+        <p class="font-body-sm text-xs text-on-surface-variant">Choose an employee login or demonstration workspace</p>
+      </div>
+
+      <div class="space-y-3 mb-6">
+        <!-- 1. Real Employee Portal Authentication -->
+        <button onclick="closeModal('login-modal'); window.navigateView('login');" class="w-full p-4 rounded-2xl bg-primary/10 hover:bg-primary-fixed/30 border border-primary/30 text-left transition-all flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center font-bold text-xs">
+            <span class="material-symbols-outlined text-[20px]">badge</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <p class="font-label-md text-sm font-bold text-on-surface">Employee Portal</p>
+              <span class="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold">Real Auth</span>
+            </div>
+            <p class="text-xs text-on-surface-variant">Sign in with Company ID, Username & Password</p>
+          </div>
+          <span class="material-symbols-outlined text-primary text-[18px]">arrow_forward</span>
+        </button>
+
+        <!-- 2. HR Admin Mockup -->
+        <button onclick="closeModal('login-modal'); window.navigateView('admin'); showToast('Loaded HR Admin Mockup (Strata Labs)', 'verified_user')" class="w-full p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container-high border border-surface-container text-left transition-all flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-surface-container-highest text-on-surface flex items-center justify-center font-bold text-xs">HR</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <p class="font-label-md text-sm font-semibold text-on-surface">Company Admin</p>
+              <span class="px-2 py-0.5 rounded-full bg-surface-container text-outline text-[10px] font-bold">Demo Mockup</span>
+            </div>
+            <p class="text-xs text-on-surface-variant">Simulated team analytics, seat controls & billing</p>
+          </div>
+        </button>
+
+        <!-- 3. Superadmin Mockup -->
+        <button onclick="closeModal('login-modal'); window.navigateView('superadmin'); showToast('Loaded Superadmin Mockup', 'admin_panel_settings')" class="w-full p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container-high border border-surface-container text-left transition-all flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-secondary text-on-secondary flex items-center justify-center font-bold text-xs">SA</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <p class="font-label-md text-sm font-semibold text-on-surface">Platform Superadmin</p>
+              <span class="px-2 py-0.5 rounded-full bg-surface-container text-outline text-[10px] font-bold">Demo Mockup</span>
+            </div>
+            <p class="text-xs text-on-surface-variant">Simulated companies, INR pricing & transactions</p>
+          </div>
+        </button>
+      </div>
+
+      <div class="text-center">
+        <span class="text-xs text-outline">Real employee accounts are verified using server-side scrypt cryptography</span>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 5. Get Started / Team Onboarding Dialog -->
+  <dialog id="onboarding-modal" closedby="any" aria-labelledby="onboarding-modal-title">
+    <div class="modal-card bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-2xl max-w-lg w-[92vw] border border-surface-container text-on-surface relative">
+      <button onclick="closeModal('onboarding-modal')" class="absolute top-5 right-5 text-outline hover:text-on-surface p-1 rounded-full hover:bg-surface-container transition-colors" aria-label="Close onboarding">
+        <span class="material-symbols-outlined text-[22px]">close</span>
+      </button>
+
+      <div class="mb-6">
+        <span class="font-label-sm text-xs uppercase tracking-wider text-primary font-semibold">14-Day Free Enterprise Trial</span>
+        <h3 id="onboarding-modal-title" class="font-headline-sm text-xl font-bold text-on-surface mt-1">Get Started with CalmPop</h3>
+        <p class="font-body-sm text-xs text-on-surface-variant">Launch your first proactive calm check-in in under 3 minutes.</p>
+      </div>
+
+      <form onsubmit="event.preventDefault(); closeModal('onboarding-modal'); window.openRegistrationModal('growth');" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1" for="org-name">Company / Organization Name</label>
+          <input type="text" id="org-name" required placeholder="e.g. Acme Technologies" class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low border border-surface-container text-on-surface text-sm focus:outline-none focus:border-primary"/>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-on-surface mb-1" for="work-email">Your Work Email</label>
+          <input type="email" id="work-email" required placeholder="alex@acme.com" class="w-full px-4 py-2.5 rounded-xl bg-surface-container-low border border-surface-container text-on-surface text-sm focus:outline-none focus:border-primary"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1" for="team-size">Team Headcount</label>
+            <select id="team-size" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low border border-surface-container text-on-surface text-sm focus:outline-none focus:border-primary">
+              <option>10 - 25 seats</option>
+              <option selected>26 - 100 seats</option>
+              <option>101 - 500 seats</option>
+              <option>500+ seats</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-on-surface mb-1" for="cadence-day">Preferred Cadence Day</label>
+            <select id="cadence-day" class="w-full px-3 py-2.5 rounded-xl bg-surface-container-low border border-surface-container text-on-surface text-sm focus:outline-none focus:border-primary">
+              <option>Thursday Afternoon</option>
+              <option>Friday Morning</option>
+              <option>Monday Kickoff</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-3 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-lg font-bold hover:bg-tertiary-fixed-dim transition-all shadow-md">
+            Create Organization Workspace
+          </button>
+        </div>
+
+        <p class="text-[11px] text-outline text-center">
+          No credit card required. Full 14 days of access to all Growth features.
+        </p>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Application Logic -->
+  <script type="module" src="./src/main.js"></script>
+
+</body>
+</html>
