@@ -29,13 +29,8 @@ export const GAMES_CATALOG = [
     route: '/employee/games/zen-sand',
     hashRoute: '#employee/games/zen-sand',
     thumbnailSvg: `
-      <svg viewBox="0 0 200 120" class="w-full h-full object-cover" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <clipPath id="zenSandClip">
-            <rect width="200" height="120" rx="0"/>
-          </clipPath>
-        </defs>
-        <image href="/images/zen-sand-thumbnail.jpg" x="0" y="0" width="200" height="120" preserveAspectRatio="xMidYMid slice" clip-path="url(#zenSandClip)"/>
+      <svg viewBox="0 0 200 120" preserveAspectRatio="none" class="w-full h-full block m-0 p-0" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%; display: block; margin: 0; padding: 0;">
+        <image href="/images/zen-sand-thumbnail.jpg" x="0" y="0" width="200" height="120" preserveAspectRatio="xMidYMid slice" style="width: 100%; height: 100%;"/>
       </svg>
     `,
     render: (sm, opts) => renderZenSand(sm, opts),

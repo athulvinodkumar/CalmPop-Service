@@ -137,8 +137,8 @@ export function renderGamesLibrary(containerId = 'games-page-root', requestedGam
         ${filtered.map(game => `
           <div class="group bg-surface-container-lowest rounded-3xl border border-surface-container hover:border-primary/50 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
             
-            <!-- Card Header: Custom Graphical SVG Preview Thumbnail -->
-            <div class="h-48 w-full relative overflow-hidden bg-slate-100 flex items-center justify-center border-b border-surface-container/60">
+            <!-- Card Header: Custom Graphical Preview Thumbnail with zero padding/margins -->
+            <div class="h-48 w-full relative overflow-hidden bg-slate-100 p-0 m-0 border-b border-surface-container/60">
               ${game.thumbnailSvg}
 
               <!-- Floating Badges Overlay -->

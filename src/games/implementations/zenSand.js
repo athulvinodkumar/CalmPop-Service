@@ -6,10 +6,10 @@ import { audioSynth } from '../audioSynth.js';
 
 export function renderZenSand(sessionManager, options = {}) {
   return `
-    <div id="zen-sand-root" class="relative w-full flex flex-col items-center justify-between min-h-[560px] p-2 sm:p-4 select-none">
+    <div id="zen-sand-root" class="relative w-full h-full flex flex-col items-center justify-between min-h-[560px] p-1 sm:p-2 select-none">
       
       <!-- Top Garden Toolbar -->
-      <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-3 bg-surface-container-low/70 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-surface-container mb-3 text-xs">
+      <div class="w-full max-w-5xl flex flex-wrap items-center justify-between gap-3 bg-surface-container-low/70 backdrop-blur-md px-4 py-2 rounded-2xl border border-surface-container mb-2 text-xs">
         
         <!-- Left: Tool & Mode Switcher -->
         <div class="flex items-center gap-2">
@@ -74,28 +74,28 @@ export function renderZenSand(sessionManager, options = {}) {
 
       </div>
 
-      <!-- Main Sand Canvas Container with Japanese Wood-Trim Frame -->
-      <div class="relative w-full max-w-4xl flex-1 min-h-[460px] rounded-3xl p-3 sm:p-4 bg-gradient-to-br from-[#8C6D4C] via-[#6F5132] to-[#594025] shadow-xl border-4 border-[#5E4429] flex items-center justify-center overflow-hidden">
+      <!-- Main Sand Canvas Container with Zero Padding / Margins -->
+      <div class="relative w-full max-w-5xl flex-1 min-h-[480px] rounded-2xl p-0 m-0 shadow-2xl border border-surface-container flex items-center justify-center overflow-hidden">
         
-        <!-- Inner Border / Bevel -->
-        <div class="relative w-full h-full min-h-[440px] rounded-2xl overflow-hidden shadow-inner border-2 border-black/20 bg-[#DFCDA4]">
+        <!-- Inner Canvas Viewport -->
+        <div class="relative w-full h-full min-h-[480px] rounded-2xl overflow-hidden p-0 m-0 bg-[#DFCDA4]">
           
           <!-- Interactive Sand Garden Canvas -->
           <canvas 
             id="zen-sand-canvas" 
-            class="w-full h-full block cursor-crosshair touch-none"
-            style="touch-action: none;"
+            class="w-full h-full block cursor-crosshair touch-none m-0 p-0"
+            style="touch-action: none; display: block;"
           ></canvas>
 
           <!-- Wave Overlay Canvas (for translucent ocean water wash effect) -->
           <canvas 
             id="zen-wave-canvas" 
-            class="absolute inset-0 w-full h-full pointer-events-none"
-            style="touch-action: none;"
+            class="absolute inset-0 w-full h-full pointer-events-none m-0 p-0"
+            style="touch-action: none; display: block;"
           ></canvas>
 
           <!-- Subtle Drag Prompt Overlay (Disappears on first interaction) -->
-          <div id="zen-sand-hint" class="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none bg-black/30 backdrop-blur-md text-white text-[11px] font-medium px-4 py-1.5 rounded-full shadow-lg transition-opacity duration-700 flex items-center gap-2">
+          <div id="zen-sand-hint" class="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none bg-black/40 backdrop-blur-md text-white text-[11px] font-medium px-4 py-1.5 rounded-full shadow-lg transition-opacity duration-700 flex items-center gap-2">
             <span class="material-symbols-outlined text-[16px]">touch_app</span>
             <span>Drag mouse or touch to rake the sand garden</span>
           </div>
@@ -105,7 +105,7 @@ export function renderZenSand(sessionManager, options = {}) {
       </div>
 
       <!-- Bottom Guidance Note -->
-      <div class="mt-3 text-center text-outline text-[11px] flex items-center gap-2">
+      <div class="mt-2 text-center text-outline text-[11px] flex items-center gap-2">
         <span class="material-symbols-outlined text-[14px] text-tertiary">spa</span>
         <span>Rake slowly to hear filtered whispering sand friction. Click Wave Smoothing to restore harmony.</span>
       </div>
@@ -169,6 +169,14 @@ export class ZenSandController {
     this.generateSmoothSand();
     this.render();
 
+    // Preload user sand garden image to fit the canvas background seamlessly
+    this.sandImg = new Image();
+    this.sandImg.src = '/images/zen-sand-thumbnail.jpg';
+    this.sandImg.onload = () => {
+      this.generateSmoothSand();
+      this.render();
+    };
+
     // Attach listeners
     this.canvas.addEventListener('pointerdown', this.handlePointerDown);
     window.addEventListener('pointermove', this.handlePointerMove);
@@ -224,6 +232,25 @@ export class ZenSandController {
     const w = this.displayWidth;
     const h = this.displayHeight;
     const bg = this.bgCtx;
+
+    if (this.sandImg && this.sandImg.complete && this.sandImg.naturalWidth > 0) {
+      const imgRatio = this.sandImg.naturalWidth / this.sandImg.naturalHeight;
+      const canvasRatio = w / h;
+      let dw, dh, dx, dy;
+      if (canvasRatio > imgRatio) {
+        dw = w;
+        dh = w / imgRatio;
+        dx = 0;
+        dy = (h - dh) / 2;
+      } else {
+        dh = h;
+        dw = h * imgRatio;
+        dx = (w - dw) / 2;
+        dy = 0;
+      }
+      bg.drawImage(this.sandImg, dx, dy, dw, dh);
+      return;
+    }
 
     // Warm natural sand base gradient
     const grad = bg.createLinearGradient(0, 0, w, h);
