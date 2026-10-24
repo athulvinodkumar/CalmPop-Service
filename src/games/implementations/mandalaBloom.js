@@ -1,70 +1,54 @@
 // CalmPop - Mandala Bloom Creative Experience
-// Eight-fold radial kaleidoscopic drawing in shifting pastels with
-// harmonic pentatonic bell tones, undo/redo, brush controls, and PNG export.
+// Built faithful to zero-syntax-gray.vercel.app reference implementation:
+// 8-way radial symmetry kaleidoscopic drawing in shifting pastels (#0f0a1c background),
+// pentatonic audio chimes (playPentatonicNote / playMandalaHarmonic),
+// dynamic hue indicator, undo/redo, brush size control, clear canvas, and PNG save.
 
 import { audioSynth } from '../audioSynth.js';
 import { PrivateStorageManager } from '../privateStorage.js';
 
-const PASTEL_PALETTE = [
-  { name: 'Sky Cyan', hex: '#38BDF8' },
-  { name: 'Calm Lime', hex: '#C9F246' },
-  { name: 'Blossom Rose', hex: '#F472B6' },
-  { name: 'Lavender Mist', hex: '#C084FC' },
-  { name: 'Mint Leaf', hex: '#4ADE80' },
-  { name: 'Warm Peach', hex: '#FB923C' },
-  { name: 'Soft Gold', hex: '#FACC15' },
-  { name: 'Celestial White', hex: '#FFFFFF' }
-];
-
 export function renderMandalaBloom(sessionManager, options = {}) {
   return `
-    <div id="mandala-bloom-root" class="relative w-full flex flex-col items-center justify-between min-h-[580px] p-2 sm:p-4 select-none">
+    <div id="mandala-bloom-root" class="w-full h-full flex flex-col items-center justify-between p-2 sm:p-4 bg-purple-950/20 select-none min-h-[560px]">
       
-      <!-- Top Creative Toolbar -->
-      <div class="w-full max-w-4xl flex flex-wrap items-center justify-between gap-3 bg-surface-container-low/80 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-surface-container mb-3 text-xs shadow-xs">
+      <!-- Top Sleek Floating Toolbar (Matching zero-syntax-gray.vercel.app) -->
+      <div class="w-full max-w-2xl flex flex-wrap items-center justify-between gap-2 px-4 py-2 rounded-2xl bg-purple-950/40 backdrop-blur-md border border-purple-500/20 text-xs text-purple-200 shadow-lg">
         
-        <!-- Left: Pastel Colors & Rainbow Shift Mode -->
+        <!-- Left: 8-Way Radial Symmetry Tag & Live Current Stroke Hue Indicator -->
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[16px] text-purple-400">explore</span>
+          <span class="font-medium text-purple-100">8-Way Radial Symmetry</span>
+          <span 
+            id="mandala-hue-indicator" 
+            class="w-3.5 h-3.5 rounded-full transition-colors border border-white/20 shadow-xs" 
+            style="background-color: hsl(260, 85%, 68%);" 
+            title="Current Stroke Hue"
+          ></span>
+        </div>
+
+        <!-- Center / Right: Creative Controls (Brush Size, Undo, Redo, Clear, Save) -->
         <div class="flex items-center gap-1.5 flex-wrap">
-          <span class="text-outline font-semibold uppercase tracking-wider text-[10px] mr-1 hidden sm:inline">Color:</span>
           
-          <!-- Shifting Pastels (Rainbow Cycle) Toggle -->
+          <!-- Mode Toggle (Morphing vs Fixed) -->
           <button 
             type="button" 
             id="btn-color-shifting" 
-            class="px-2.5 py-1 rounded-xl font-bold transition-all bg-gradient-to-r from-pink-400 via-sky-400 to-lime-400 text-slate-900 shadow-xs flex items-center gap-1 ring-2 ring-primary"
-            title="Shifting Pastels Mode: Smoothly morphs colors while drawing"
-          >
-            <span class="material-symbols-outlined text-[14px]">palette</span>
-            <span>Morphing</span>
-          </button>
+            class="hidden" 
+            data-active="true"
+          ></button>
 
-          <!-- Fixed Pastel Palette Swatches -->
-          ${PASTEL_PALETTE.map(p => `
-            <button 
-              type="button" 
-              class="mandala-color-swatch w-6 h-6 rounded-full border border-black/20 hover:scale-125 transition-transform shadow-2xs"
-              style="background-color: ${p.hex};"
-              data-hex="${p.hex}"
-              title="${p.name}"
-            ></button>
-          `).join('')}
-        </div>
-
-        <!-- Right: Brush, Undo, Redo, Clear, & Export -->
-        <div class="flex items-center gap-2">
-          
           <!-- Brush Size Slider -->
-          <div class="flex items-center gap-1.5 bg-surface-container-lowest px-2.5 py-1 rounded-xl border border-surface-container">
-            <span class="material-symbols-outlined text-[14px] text-outline">brush</span>
+          <div class="flex items-center gap-1.5 bg-purple-900/40 px-2 py-1 rounded-xl border border-purple-500/30 text-[11px]">
+            <span class="material-symbols-outlined text-[13px] text-purple-300">brush</span>
             <input 
               type="range" 
               id="mandala-brush-size" 
-              min="2" 
-              max="24" 
-              step="1" 
-              value="4" 
-              class="w-16 accent-primary cursor-pointer"
-              title="Adjust Brush Width"
+              min="1.5" 
+              max="16" 
+              step="0.5" 
+              value="2.5" 
+              class="w-14 accent-purple-400 cursor-pointer" 
+              title="Brush Size" 
             />
           </div>
 
@@ -72,71 +56,64 @@ export function renderMandalaBloom(sessionManager, options = {}) {
           <button 
             type="button" 
             id="btn-mandala-undo" 
-            class="p-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center"
+            class="p-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-500/30 transition active:scale-95 flex items-center justify-center" 
             title="Undo Last Stroke"
           >
-            <span class="material-symbols-outlined text-[18px]">undo</span>
+            <span class="material-symbols-outlined text-[16px]">undo</span>
           </button>
 
           <!-- Redo Button -->
           <button 
             type="button" 
             id="btn-mandala-redo" 
-            class="p-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors flex items-center justify-center"
+            class="p-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-500/30 transition active:scale-95 flex items-center justify-center" 
             title="Redo Stroke"
           >
-            <span class="material-symbols-outlined text-[18px]">redo</span>
+            <span class="material-symbols-outlined text-[16px]">redo</span>
           </button>
 
-          <!-- Clear Canvas -->
+          <!-- Clear Canvas Button (Exact style from reference) -->
           <button 
             type="button" 
             id="btn-mandala-clear" 
-            class="px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold transition-all flex items-center gap-1"
-            title="Clear Mandala Canvas"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 text-purple-200 border border-purple-500/30 transition active:scale-95 font-medium"
+            title="Clear Canvas"
           >
-            <span class="material-symbols-outlined text-[16px]">restart_alt</span>
-            <span class="hidden sm:inline">Clear</span>
+            <span class="material-symbols-outlined text-[15px]">refresh</span>
+            <span>Clear Canvas</span>
           </button>
 
-          <!-- Save / Export Artwork -->
+          <!-- Save Artwork -->
           <button 
             type="button" 
             id="btn-mandala-save" 
-            class="px-3.5 py-1.5 rounded-xl bg-primary text-on-primary font-bold shadow-xs hover:bg-primary-container transition-all flex items-center gap-1.5"
+            class="p-1.5 rounded-xl bg-purple-500/30 hover:bg-purple-500/40 text-purple-100 border border-purple-400/40 transition active:scale-95 flex items-center justify-center" 
             title="Save Mandala Image"
           >
             <span class="material-symbols-outlined text-[16px]">download</span>
-            <span>Save Artwork</span>
           </button>
 
         </div>
 
       </div>
 
-      <!-- Main Mandala Drawing Stage (No extra padding or margins, seamless full canvas) -->
-      <div id="mandala-stage-container" class="relative w-full flex-1 min-h-[560px] h-full rounded-3xl overflow-hidden shadow-2xl border border-slate-700/60 bg-[#070A12] flex items-center justify-center">
-        
-        <!-- Interactive 8-Fold Mandala Drawing Canvas (Takes 100% of the entire viewport area) -->
+      <!-- Main Seamless Canvas Stage Container (Exact style from reference: w-full max-w-2xl border border-purple-500/30 shadow-2xl rounded-3xl overflow-hidden) -->
+      <div 
+        id="mandala-stage-container" 
+        class="flex-1 w-full max-w-2xl relative my-3 rounded-3xl overflow-hidden border border-purple-500/30 shadow-2xl min-h-[440px] flex items-center justify-center bg-[#0f0a1c]"
+      >
+        <!-- The interactive canvas fills 100% of stage container with zero gaps -->
         <canvas 
           id="mandala-bloom-canvas" 
-          class="w-full h-full block cursor-crosshair touch-none"
+          class="w-full h-full cursor-crosshair touch-none select-none block"
           style="touch-action: none; display: block;"
         ></canvas>
-
-        <!-- Tap Guidance Hint -->
-        <div id="mandala-hint" class="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none bg-black/60 backdrop-blur-md text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg transition-opacity duration-700 flex items-center gap-2 border border-white/20 z-20">
-          <span class="material-symbols-outlined text-[16px] text-cyan-400 animate-pulse">auto_fix_high</span>
-          <span>Click or drag anywhere across the canvas — 8-fold radial petals bloom automatically</span>
-        </div>
-
       </div>
 
-      <!-- Bottom Guidance Note -->
-      <div class="mt-2 text-center text-outline text-[11px] flex items-center gap-2">
-        <span class="material-symbols-outlined text-[14px] text-primary">grain</span>
-        <span>Eight-fold kaleidoscopic symmetry with harmonic pentatonic bell tones mapped to canvas radius.</span>
-      </div>
+      <!-- Bottom Guidance Note (Exact wording from zero-syntax-gray.vercel.app) -->
+      <p class="text-xs text-purple-200/60 text-center pb-2">
+        Draw anywhere. 8 mirrored strokes bloom simultaneously in shifting pastel light.
+      </p>
 
     </div>
   `;
@@ -146,32 +123,19 @@ export class MandalaBloomController {
   constructor(sessionManager, options = {}) {
     this.sessionManager = sessionManager;
     this.options = options;
-    
+
     this.canvas = null;
     this.ctx = null;
     this.isDrawing = false;
     this.lastPoint = null;
-    this.hasInteracted = false;
+    this.currentHue = 260; // Reference starts at 260° (vibrant purple-violet)
+    this.lastAudioTime = 0;
+    this.brushSize = 2.5;
 
-    // Drawing parameters
-    this.isShiftingColor = true;
-    this.colorHue = 190; // Start at calm cyan
-    this.currentColor = '#38BDF8';
-    this.brushSize = 4;
-
-    // Canvas dimensions
-    this.displayWidth = 800;
-    this.displayHeight = 520;
-    this.centerX = 400;
-    this.centerY = 260;
-
-    // Undo / Redo history stack (stored as offscreen canvas snapshots)
+    // Undo / Redo history stack (snapshots of canvas)
     this.undoStack = [];
     this.redoStack = [];
     this.maxHistory = 20;
-
-    // Audio frequency mapping throttle
-    this.lastAudioTime = 0;
 
     this.handlePointerDown = this.handlePointerDown.bind(this);
     this.handlePointerMove = this.handlePointerMove.bind(this);
@@ -184,88 +148,79 @@ export class MandalaBloomController {
     if (!this.canvas) return;
 
     this.ctx = this.canvas.getContext('2d');
-    this.setupCanvasSize();
-    this.drawBackgroundGuides();
-    this.saveState(); // Initial blank state with guides
+    this.setupAndRenderGuides();
+    this.saveState(); // Initial clear state with guides
 
+    // Pointer events on canvas
     this.canvas.addEventListener('pointerdown', this.handlePointerDown);
-    window.addEventListener('pointermove', this.handlePointerMove);
-    window.addEventListener('pointerup', this.handlePointerUp);
-    window.addEventListener('pointercancel', this.handlePointerUp);
+    this.canvas.addEventListener('pointermove', this.handlePointerMove);
+    this.canvas.addEventListener('pointerup', this.handlePointerUp);
+    this.canvas.addEventListener('pointerleave', this.handlePointerUp);
+    this.canvas.addEventListener('pointercancel', this.handlePointerUp);
+
     window.addEventListener('resize', this.handleResize);
 
     this.attachUiListeners();
   }
 
-  setupCanvasSize() {
-    if (!this.canvas) return;
-    const parent = document.getElementById('mandala-stage-container') || this.canvas.parentElement;
-    const rect = parent.getBoundingClientRect();
-    const dpr = Math.max(window.devicePixelRatio || 1, 2); // High-DPI crisp antialiased rendering
-    
-    // Accurate pixel dimensions of container
-    const width = Math.max(300, Math.floor(parent.clientWidth || rect.width || 800));
-    const height = Math.max(360, Math.floor(parent.clientHeight || rect.height || 560));
-
-    this.dpr = dpr;
-    this.canvas.width = width * dpr;
-    this.canvas.height = height * dpr;
-    this.canvas.style.width = '100%';
-    this.canvas.style.height = '100%';
-
-    this.displayWidth = width;
-    this.displayHeight = height;
-    this.centerX = width / 2;
-    this.centerY = height / 2;
-  }
-
-  drawBackgroundGuides() {
-    // Subtle background concentric guidelines spanning the entire canvas
-    const ctx = this.ctx;
-    const dpr = this.dpr || 1;
-    const cx = this.centerX * dpr;
-    const cy = this.centerY * dpr;
-    const maxR = Math.hypot(this.centerX, this.centerY) * dpr;
-
+  // Draw reference background guide lines: 8 rays + 3 concentric circles (0.3, 0.6, 0.9)
+  drawGuides(ctx, cx, cy, radius) {
     ctx.save();
-    
-    // Rich deep celestial backdrop filling entire canvas
-    const grad = ctx.createRadialGradient(cx, cy, 20 * dpr, cx, cy, maxR);
-    grad.addColorStop(0, '#0F172A');
-    grad.addColorStop(0.6, '#0B1120');
-    grad.addColorStop(1, '#05070D');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.lineWidth = 1;
 
-    // Concentric guide rings across full width & height
-    ctx.lineWidth = 1 * dpr;
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)'; // faint cyan ring
-    const ringRadii = [60, 120, 180, 240, 320, 420];
-    for (const r of ringRadii) {
-      if (r * dpr < maxR) {
-        ctx.beginPath();
-        ctx.arc(cx, cy, r * dpr, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-    }
-
-    // Radial axis guide rays (8 axes radiating out to canvas borders)
-    ctx.strokeStyle = 'rgba(201, 242, 70, 0.05)'; // faint lime axis
+    // 8 radial rays
     for (let i = 0; i < 8; i++) {
       const angle = (i * Math.PI) / 4;
       ctx.beginPath();
       ctx.moveTo(cx, cy);
-      ctx.lineTo(cx + Math.cos(angle) * maxR, cy + Math.sin(angle) * maxR);
+      ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
       ctx.stroke();
     }
 
-    // Faint center point
-    ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
-    ctx.beginPath();
-    ctx.arc(cx, cy, 4 * dpr, 0, Math.PI * 2);
-    ctx.fill();
+    // 3 concentric circles: 30%, 60%, 90%
+    [radius * 0.3, radius * 0.6, radius * 0.9].forEach(r => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+    });
 
     ctx.restore();
+  }
+
+  // Setup resolution matching the exact parent dimensions with DPR support
+  setupAndRenderGuides() {
+    const canvas = this.canvas;
+    if (!canvas) return;
+    const ctx = this.ctx;
+    if (!ctx) return;
+    const parent = canvas.parentElement;
+    if (!parent) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    const rect = parent.getBoundingClientRect();
+    const w = Math.max(300, Math.floor(rect.width || 672));
+    const h = Math.max(300, Math.floor(rect.height || 480));
+
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+
+    ctx.scale(dpr, dpr);
+    ctx.fillStyle = '#0f0a1c'; // Reference exact background color
+    ctx.fillRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const radius = Math.min(w, h) * 0.45;
+    this.drawGuides(ctx, cx, cy, radius);
+
+    this.displayWidth = w;
+    this.displayHeight = h;
+    this.centerX = cx;
+    this.centerY = cy;
+    this.guideRadius = radius;
   }
 
   handleResize() {
@@ -276,70 +231,160 @@ export class MandalaBloomController {
     const tempCtx = tempCanvas.getContext('2d');
     tempCtx.drawImage(this.canvas, 0, 0);
 
-    this.setupCanvasSize();
-    this.ctx.drawImage(tempCanvas, 0, 0, this.canvas.width, this.canvas.height);
+    this.setupAndRenderGuides();
+    this.ctx.drawImage(tempCanvas, 0, 0, this.displayWidth, this.displayHeight);
   }
 
-  attachUiListeners() {
-    // Shifting color button
-    const shiftBtn = document.getElementById('btn-color-shifting');
-    if (shiftBtn) {
-      shiftBtn.addEventListener('click', () => {
-        this.isShiftingColor = true;
-        shiftBtn.classList.add('ring-2', 'ring-primary');
-        document.querySelectorAll('.mandala-color-swatch').forEach(s => s.classList.remove('ring-2', 'ring-white'));
-      });
+  getPointerPos(e) {
+    if (!this.canvas) return { x: 0, y: 0 };
+    const rect = this.canvas.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+
+  handlePointerDown(e) {
+    this.isDrawing = true;
+    this.lastPoint = this.getPointerPos(e);
+  }
+
+  handlePointerMove(e) {
+    if (!this.isDrawing || !this.lastPoint) return;
+    const current = this.getPointerPos(e);
+    this.drawMirroredStroke(this.lastPoint, current);
+    this.lastPoint = current;
+    this.sessionManager?.recordEvent('mandala_stroke');
+  }
+
+  handlePointerUp() {
+    if (this.isDrawing) {
+      this.isDrawing = false;
+      this.lastPoint = null;
+      this.saveState();
+    }
+  }
+
+  // Mirrored drawing algorithm from zero-syntax-gray.vercel.app reference:
+  // Shifts hue by +0.8° each step, translates to center, draws 8 rotations and reflections with shadow blur 8
+  drawMirroredStroke(from, to) {
+    const canvas = this.canvas;
+    if (!canvas) return;
+    const ctx = this.ctx;
+    if (!ctx) return;
+
+    const cx = this.centerX;
+    const cy = this.centerY;
+    const dx0 = from.x - cx;
+    const dy0 = from.y - cy;
+    const dx1 = to.x - cx;
+    const dy1 = to.y - cy;
+
+    // Shift hue smoothly
+    this.currentHue = (this.currentHue + 0.8) % 360;
+    this.updateHueIndicator(Math.round(this.currentHue));
+
+    const color = `hsl(${this.currentHue}, 85%, 68%)`;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = this.brushSize;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 8; // Glowing neon petal halo
+
+    for (let e = 0; e < 8; e++) {
+      const angle = (e * Math.PI) / 4;
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+
+      // Direct 8-fold ray
+      const rx0 = dx0 * cos - dy0 * sin;
+      const ry0 = dx0 * sin + dy0 * cos;
+      const rx1 = dx1 * cos - dy1 * sin;
+      const ry1 = dx1 * sin + dy1 * cos;
+
+      ctx.beginPath();
+      ctx.moveTo(rx0, ry0);
+      ctx.lineTo(rx1, ry1);
+      ctx.stroke();
+
+      // Reflected 8-fold ray
+      const mx0 = dx0 * cos + dy0 * sin;
+      const my0 = dx0 * sin - dy0 * cos;
+      const mx1 = dx1 * cos + dy1 * sin;
+      const my1 = dx1 * sin - dy1 * cos;
+
+      ctx.beginPath();
+      ctx.moveTo(mx0, my0);
+      ctx.lineTo(mx1, my1);
+      ctx.stroke();
     }
 
-    // Color Swatches
-    document.querySelectorAll('.mandala-color-swatch').forEach(swatch => {
-      swatch.addEventListener('click', (e) => {
-        this.isShiftingColor = false;
-        if (shiftBtn) shiftBtn.classList.remove('ring-2', 'ring-primary');
-        document.querySelectorAll('.mandala-color-swatch').forEach(s => s.classList.remove('ring-2', 'ring-white'));
-        e.currentTarget.classList.add('ring-2', 'ring-white');
-        this.currentColor = e.currentTarget.dataset.hex;
-      });
-    });
+    ctx.restore();
 
-    // Brush Size Slider
-    const sizeSlider = document.getElementById('mandala-brush-size');
-    if (sizeSlider) {
-      sizeSlider.addEventListener('input', (e) => {
-        this.brushSize = parseInt(e.target.value, 10) || 4;
-      });
+    // Pentatonic chime playback throttled to 110ms (from reference bundle)
+    const now = Date.now();
+    if (now - this.lastAudioTime > 110) {
+      const noteIndex = Math.floor((this.currentHue / 45) % 8);
+      this.playPentatonicNote(noteIndex, 4);
+      this.lastAudioTime = now;
     }
+  }
 
-    // Undo / Redo
-    const undoBtn = document.getElementById('btn-mandala-undo');
-    if (undoBtn) undoBtn.addEventListener('click', () => this.undo());
+  // Harmonic pentatonic bell tone matching reference implementation:
+  // Frequencies: [261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25]
+  playPentatonicNote(index, octave = 4) {
+    if (audioSynth.isMuted) return;
+    try {
+      audioSynth.init();
+      const ctx = audioSynth.ctx;
+      if (!ctx) return;
 
-    const redoBtn = document.getElementById('btn-mandala-redo');
-    if (redoBtn) redoBtn.addEventListener('click', () => this.redo());
+      const pentatonicScale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+      const baseFreq = pentatonicScale[index % pentatonicScale.length] || 261.63;
+      const freq = baseFreq * Math.pow(2, octave - 4);
 
-    // Clear Canvas
-    const clearBtn = document.getElementById('btn-mandala-clear');
-    if (clearBtn) {
-      clearBtn.addEventListener('click', () => {
-        this.drawBackgroundGuides();
-        this.saveState();
-        this.sessionManager?.recordEvent('mandala_clear');
-        audioSynth.playGentleTone(261, 0.6, 'sine', 0.04);
-      });
-    }
+      const now = ctx.currentTime;
+      const oscA = ctx.createOscillator();
+      const oscB = ctx.createOscillator();
+      const gain = ctx.createGain();
 
-    // Save Artwork
-    const saveBtn = document.getElementById('btn-mandala-save');
-    if (saveBtn) {
-      saveBtn.addEventListener('click', () => this.saveArtwork());
+      oscA.type = 'sine';
+      oscA.frequency.setValueAtTime(freq, now);
+
+      oscB.type = 'triangle';
+      oscB.frequency.setValueAtTime(freq * 2.002, now); // Micro-detuned shimmer overtone
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.08, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.4);
+
+      oscA.connect(gain);
+      oscB.connect(gain);
+      gain.connect(ctx.destination);
+
+      oscA.start(now);
+      oscB.start(now);
+      oscA.stop(now + 1.4);
+      oscB.stop(now + 1.4);
+    } catch {}
+  }
+
+  updateHueIndicator(hue) {
+    const indicator = document.getElementById('mandala-hue-indicator');
+    if (indicator) {
+      indicator.style.backgroundColor = `hsl(${hue}, 85%, 68%)`;
     }
   }
 
   saveState() {
+    if (!this.canvas) return;
     if (this.undoStack.length >= this.maxHistory) {
       this.undoStack.shift();
     }
-    // Store snapshot in an offscreen canvas for resolution independence
     const snapshotCanvas = document.createElement('canvas');
     snapshotCanvas.width = this.canvas.width;
     snapshotCanvas.height = this.canvas.height;
@@ -355,9 +400,13 @@ export class MandalaBloomController {
       const current = this.undoStack.pop();
       this.redoStack.push(current);
       const prev = this.undoStack[this.undoStack.length - 1];
+      const dpr = window.devicePixelRatio || 1;
+      this.ctx.save();
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.ctx.drawImage(prev, 0, 0);
-      audioSynth.playGentleTone(349, 0.3, 'sine', 0.03);
+      this.ctx.restore();
+      audioSynth.playGentleTone?.(349, 0.3, 'sine', 0.03);
     }
   }
 
@@ -365,255 +414,93 @@ export class MandalaBloomController {
     if (this.redoStack.length > 0) {
       const next = this.redoStack.pop();
       this.undoStack.push(next);
+      this.ctx.save();
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.ctx.drawImage(next, 0, 0);
-      audioSynth.playGentleTone(440, 0.3, 'sine', 0.03);
+      this.ctx.restore();
+      audioSynth.playGentleTone?.(440, 0.3, 'sine', 0.03);
     }
   }
 
-  getPointerPos(e) {
-    const rect = this.canvas.getBoundingClientRect();
-    // Accurately map mouse / touch coordinate relative to canvas bounding box
-    const rawX = e.clientX - rect.left;
-    const rawY = e.clientY - rect.top;
-    return {
-      x: Math.max(0, Math.min(this.displayWidth, rawX)),
-      y: Math.max(0, Math.min(this.displayHeight, rawY))
-    };
+  clearCanvas() {
+    audioSynth.playBubblePop?.(0.9);
+    this.setupAndRenderGuides();
+    this.saveState();
+    this.sessionManager?.recordEvent('mandala_clear');
   }
 
-  handlePointerDown(e) {
-    this.hideHint();
-    this.isDrawing = true;
-    const pos = this.getPointerPos(e);
-    this.lastPoint = pos;
-    // Draw initial spot so taps and clicks register immediately anywhere
-    this.drawPoint(pos);
-    this.playRadialTone(pos);
-  }
-
-  handlePointerMove(e) {
-    if (!this.isDrawing || !this.lastPoint) return;
-    const current = this.getPointerPos(e);
-
-    const dist = Math.hypot(current.x - this.lastPoint.x, current.y - this.lastPoint.y);
-    if (dist < 1.5) return;
-
-    this.drawStroke(this.lastPoint, current);
-    this.playRadialTone(current);
-
-    this.lastPoint = current;
-    this.sessionManager?.recordEvent('mandala_stroke');
-  }
-
-  handlePointerUp() {
-    if (this.isDrawing) {
-      this.isDrawing = false;
-      this.lastPoint = null;
-      this.saveState();
-    }
-  }
-
-  hideHint() {
-    if (!this.hasInteracted) {
-      this.hasInteracted = true;
-      const hint = document.getElementById('mandala-hint');
-      if (hint) {
-        hint.style.opacity = '0';
-        setTimeout(() => hint.remove(), 700);
-      }
-    }
-  }
-
-  drawPoint(p) {
-    // Single tap/point placement across all 8 radial symmetries
-    const ctx = this.ctx;
-    const dpr = this.dpr || 1;
-    const cx = this.centerX * dpr;
-    const cy = this.centerY * dpr;
-
-    if (this.isShiftingColor) {
-      this.colorHue = (this.colorHue + 1.2) % 360;
-      this.currentColor = `hsl(${this.colorHue}, 90%, 72%)`;
+  attachUiListeners() {
+    // Clear canvas button
+    const clearBtn = document.getElementById('btn-mandala-clear');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => this.clearCanvas());
     }
 
-    ctx.save();
-    ctx.fillStyle = this.currentColor;
-    ctx.shadowColor = this.currentColor;
-    ctx.shadowBlur = Math.min(10, this.brushSize * 1.5) * dpr;
-
-    const x = (p.x - this.centerX) * dpr;
-    const y = (p.y - this.centerY) * dpr;
-    const radius = (this.brushSize / 2) * dpr;
-
-    const segments = 8;
-    const angleStep = (Math.PI * 2) / segments;
-
-    for (let k = 0; k < segments; k++) {
-      const angle = k * angleStep;
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
-
-      // Direct rotation
-      const rx = x * cos - y * sin;
-      const ry = x * sin + y * cos;
-      ctx.beginPath();
-      ctx.arc(cx + rx, cy + ry, radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Reflected mirror
-      const mx = x * cos - (-y) * sin;
-      const my = x * sin + (-y) * cos;
-      ctx.beginPath();
-      ctx.arc(cx + mx, cy + my, radius, 0, Math.PI * 2);
-      ctx.fill();
+    // Brush size slider
+    const sizeSlider = document.getElementById('mandala-brush-size');
+    if (sizeSlider) {
+      sizeSlider.addEventListener('input', (e) => {
+        this.brushSize = parseFloat(e.target.value) || 2.5;
+      });
     }
 
-    ctx.restore();
-  }
+    // Undo / Redo
+    const undoBtn = document.getElementById('btn-mandala-undo');
+    if (undoBtn) undoBtn.addEventListener('click', () => this.undo());
 
-  drawStroke(p0, p1) {
-    const ctx = this.ctx;
-    const dpr = this.dpr || 1;
-    const cx = this.centerX * dpr;
-    const cy = this.centerY * dpr;
+    const redoBtn = document.getElementById('btn-mandala-redo');
+    if (redoBtn) redoBtn.addEventListener('click', () => this.redo());
 
-    // Shift color if in rainbow morphing mode
-    if (this.isShiftingColor) {
-      this.colorHue = (this.colorHue + 0.8) % 360;
-      this.currentColor = `hsl(${this.colorHue}, 90%, 72%)`;
+    // Save Artwork
+    const saveBtn = document.getElementById('btn-mandala-save');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => this.saveArtwork());
     }
-
-    ctx.save();
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.lineWidth = this.brushSize * dpr;
-    ctx.strokeStyle = this.currentColor;
-    // Crisp clarity: restrained shadow glow with sharp line stroke
-    ctx.shadowColor = this.currentColor;
-    ctx.shadowBlur = Math.min(8, this.brushSize * 1.5) * dpr;
-
-    // Coordinate vectors relative to center, scaled to internal canvas resolution
-    const x0 = (p0.x - this.centerX) * dpr;
-    const y0 = (p0.y - this.centerY) * dpr;
-    const x1 = (p1.x - this.centerX) * dpr;
-    const y1 = (p1.y - this.centerY) * dpr;
-
-    // 8-Fold Radial Kaleidoscopic Symmetry (with reflection across petals = 16-segment symmetry)
-    const segments = 8;
-    const angleStep = (Math.PI * 2) / segments;
-
-    for (let k = 0; k < segments; k++) {
-      const angle = k * angleStep;
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
-
-      // 1. Direct 8-fold rotation
-      const rx0 = x0 * cos - y0 * sin;
-      const ry0 = x0 * sin + y0 * cos;
-      const rx1 = x1 * cos - y1 * sin;
-      const ry1 = x1 * sin + y1 * cos;
-
-      ctx.beginPath();
-      ctx.moveTo(cx + rx0, cy + ry0);
-      ctx.lineTo(cx + rx1, cy + ry1);
-      ctx.stroke();
-
-      // 2. Reflected 8-fold mirror
-      const mx0 = x0 * cos - (-y0) * sin;
-      const my0 = x0 * sin + (-y0) * cos;
-      const mx1 = x1 * cos - (-y1) * sin;
-      const my1 = x1 * sin + (-y1) * cos;
-
-      ctx.beginPath();
-      ctx.moveTo(cx + mx0, cy + my0);
-      ctx.lineTo(cx + mx1, cy + my1);
-      ctx.stroke();
-    }
-
-    ctx.restore();
-  }
-
-  playRadialTone(pos) {
-    const now = Date.now();
-    if (now - this.lastAudioTime < 90) return; // Serene musical pace
-
-    const dx = pos.x - this.centerX;
-    const dy = pos.y - this.centerY;
-    const dist = Math.hypot(dx, dy);
-    const maxRadius = Math.hypot(this.centerX, this.centerY);
-    const ratio = Math.min(dist / Math.max(1, maxRadius), 1.0);
-
-    // Map distance to pentatonic scale: C4, D4, E4, G4, A4, C5, D5, E5, G5, A5, C6
-    const pentatonicFrequencies = [
-      261.63, 293.66, 329.63, 392.00, 440.00, 
-      523.25, 587.33, 659.25, 783.99, 880.00, 1046.50
-    ];
-    const index = Math.min(Math.floor(ratio * pentatonicFrequencies.length), pentatonicFrequencies.length - 1);
-    const freq = pentatonicFrequencies[index];
-
-    // Pan based on horizontal position relative to center (-1 to +1)
-    const pan = Math.max(-0.9, Math.min(0.9, dx / Math.max(1, this.centerX)));
-
-    audioSynth.playMandalaHarmonic(freq, pan);
-    this.lastAudioTime = now;
   }
 
   async saveArtwork() {
     try {
-      // 1. Create a styled high-resolution export canvas with dark starry backdrop
       const exportCanvas = document.createElement('canvas');
-      const pad = 40;
-      exportCanvas.width = this.canvas.width + pad * 2;
-      exportCanvas.height = this.canvas.height + pad * 2;
+      exportCanvas.width = this.canvas.width;
+      exportCanvas.height = this.canvas.height;
       const expCtx = exportCanvas.getContext('2d');
 
-      // Gradient background
-      const grad = expCtx.createRadialGradient(
-        exportCanvas.width / 2, exportCanvas.height / 2, 20, 
-        exportCanvas.width / 2, exportCanvas.height / 2, exportCanvas.width / 2
-      );
-      grad.addColorStop(0, '#0F172A');
-      grad.addColorStop(1, '#020617');
-      expCtx.fillStyle = grad;
-      expCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+      // Draw mandala artwork
+      expCtx.drawImage(this.canvas, 0, 0);
 
-      // Draw mandala in center
-      expCtx.drawImage(this.canvas, pad, pad);
-
-      // Subtle signature brand watermark
-      expCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      expCtx.font = 'bold 14px sans-serif';
+      // Subtle watermark in footer
+      expCtx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+      expCtx.font = 'bold 13px sans-serif';
       expCtx.textAlign = 'center';
-      expCtx.fillText('CalmPop Mandala Bloom', exportCanvas.width / 2, exportCanvas.height - 15);
+      expCtx.fillText('CalmPop • Mandala Bloom', exportCanvas.width / 2, exportCanvas.height - 18);
 
-      // 2. Download as PNG
       const dataUrl = exportCanvas.toDataURL('image/png');
       const a = document.createElement('a');
       a.href = dataUrl;
       a.download = `CalmPop-Mandala-${Date.now()}.png`;
       a.click();
 
-      // 3. Save privately to employee storage
       await PrivateStorageManager.savePrivateItem('mandala_art', {
         title: 'Mandala Bloom Kaleidoscope',
         savedAt: new Date().toISOString()
       });
 
       window.showToast?.('Mandala artwork saved and downloaded successfully.', 'download_done');
-      audioSynth.playSuccessChime();
+      audioSynth.playSuccessChime?.();
     } catch (e) {
-      console.error('Save error:', e);
+      console.error('Save artwork error:', e);
     }
   }
 
   destroy() {
     if (this.canvas) {
       this.canvas.removeEventListener('pointerdown', this.handlePointerDown);
+      this.canvas.removeEventListener('pointermove', this.handlePointerMove);
+      this.canvas.removeEventListener('pointerup', this.handlePointerUp);
+      this.canvas.removeEventListener('pointerleave', this.handlePointerUp);
+      this.canvas.removeEventListener('pointercancel', this.handlePointerUp);
     }
-    window.removeEventListener('pointermove', this.handlePointerMove);
-    window.removeEventListener('pointerup', this.handlePointerUp);
-    window.removeEventListener('pointercancel', this.handlePointerUp);
     window.removeEventListener('resize', this.handleResize);
   }
 }
