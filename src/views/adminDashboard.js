@@ -30,12 +30,11 @@ export function renderAdminDashboard(companyId, containerId = 'app-view-containe
       <aside class="w-full lg:w-64 bg-surface-container-lowest border-r border-surface-container flex-shrink-0 flex flex-col justify-between py-6 px-4">
         <div>
           <!-- Logo & Brand Header -->
-          <div class="flex items-center justify-between px-2 mb-6">
-            <a href="#home" onclick="window.navigateView('landing')" class="flex items-center gap-2.5 group">
-              <img alt="CalmPop Logo" class="h-7 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WGEh00kXjxC-nRTncmjpGib0cLyCbt9ALqLbrBhfdig6r5L9wi5sgO3MFI_wd_iXaIRyJFIkstCjbWXKwffm7ECqDcLAgv5Kcx0KpXhprJ8ki9DKEbQHcSDfDUDG0RctReHBwPpK-6UbUizp5IS9wtVcYr8HNxHH54u-v3orL0pZ037sUoCqRDo4S_OsT7sylMzGbyHL6ETa-ofrjs0QX37bw6xNCP8HNV9iAL4K1meefYhcZo474dido-"/>
-              <span class="font-headline-sm text-lg font-bold text-on-surface">CalmPop</span>
+          <div class="flex items-center justify-between px-1 mb-6">
+            <a href="#home" onclick="window.navigateView('landing')" class="flex items-center group flex-shrink-0" title="CalmPop Home">
+              <img alt="CalmPop Logo" class="h-7 w-auto object-contain transition-transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1WGEh00kXjxC-nRTncmjpGib0cLyCbt9ALqLbrBhfdig6r5L9wi5sgO3MFI_wd_iXaIRyJFIkstCjbWXKwffm7ECqDcLAgv5Kcx0KpXhprJ8ki9DKEbQHcSDfDUDG0RctReHBwPpK-6UbUizp5IS9wtVcYr8HNxHH54u-v3orL0pZ037sUoCqRDo4S_OsT7sylMzGbyHL6ETa-ofrjs0QX37bw6xNCP8HNV9iAL4K1meefYhcZo474dido-"/>
             </a>
-            <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold">Admin</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold tracking-wide uppercase flex-shrink-0">Admin</span>
           </div>
 
           <!-- Current Org Card -->

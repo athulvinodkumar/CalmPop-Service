@@ -39,9 +39,8 @@ export function renderSuperadminView(containerId = 'app-view-container') {
         <!-- Header & Role Notice -->
         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-surface-container pb-6">
           <div class="flex items-center gap-3">
-            <a href="#home" onclick="window.navigateView('landing')" class="flex items-center gap-2">
-              <img alt="CalmPop Logo" class="h-8 w-auto" src="https://lh3.googleusercontent.com/aida/AEtjO1WGEh00kXjxC-nRTncmjpGib0cLyCbt9ALqLbrBhfdig6r5L9wi5sgO3MFI_wd_iXaIRyJFIkstCjbWXKwffm7ECqDcLAgv5Kcx0KpXhprJ8ki9DKEbQHcSDfDUDG0RctReHBwPpK-6UbUizp5IS9wtVcYr8HNxHH54u-v3orL0pZ037sUoCqRDo4S_OsT7sylMzGbyHL6ETa-ofrjs0QX37bw6xNCP8HNV9iAL4K1meefYhcZo474dido-"/>
-              <span class="font-headline-sm text-xl font-bold text-on-surface">CalmPop</span>
+            <a href="#home" onclick="window.navigateView('landing')" class="flex items-center" title="CalmPop Home">
+              <img alt="CalmPop Logo" class="h-8 w-auto object-contain transition-transform hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1WGEh00kXjxC-nRTncmjpGib0cLyCbt9ALqLbrBhfdig6r5L9wi5sgO3MFI_wd_iXaIRyJFIkstCjbWXKwffm7ECqDcLAgv5Kcx0KpXhprJ8ki9DKEbQHcSDfDUDG0RctReHBwPpK-6UbUizp5IS9wtVcYr8HNxHH54u-v3orL0pZ037sUoCqRDo4S_OsT7sylMzGbyHL6ETa-ofrjs0QX37bw6xNCP8HNV9iAL4K1meefYhcZo474dido-"/>
             </a>
             <span class="text-outline">/</span>
             <span class="px-3 py-1 rounded-full bg-on-tertiary-fixed text-tertiary-fixed text-xs font-bold uppercase tracking-wider">
